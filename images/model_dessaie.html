@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>model d'essaie</title>
+</head>
+<body>
+
+
+    <!-- contenu de la page note-->
+     <div class="contenu activecontenu contenu2" data-anim="2">    
+
+            <div class="contenu_Ajout_note">
+                            <div class="barre">
+                                <h1 class="btn-ajout"><i class="fa-solid fa-plus"></i> Ajouter</h1>
+                            </div>
+                            <div class="box-form">
+                                    <div class="close">
+                                            <button hidden class="btn-close">&times;</button>
+                                        <h1>ajout de note</h1>
+                                    </div>
+                                        <div class="formulaire">
+                                                    <form action="#" method="post" class="forMuLaire" name="forMuLaire" >
+                                                        <input type="text" placeholder="libelle matiere" name="libelle"><br>
+                                                        <input type="date" placeholder="date" name="date_note" ><br>
+                                                        <input type="number" placeholder="note" name="note"> <br>
+                                                        <input type="submit" value="Enregistre" class="btn-subm" name="Enregistre" step="0.5" min="0" max="20">
+                                                    </form>
+                                                
+                                        </div>      
+                            </div>
+                            
+
+            </div>
+          <div class="contenu_affichage_note">
+                            <div class="Affich_Anote">
+                                        <table class="affichage">
+                                            <tr>
+                                                <td><h1>action</h1> </td>
+                                                <td><h1>Libelle</h1> </td>
+                                                <td><h1>Date</h1> </td>
+                                                <td><h1>Note</h1></td>
+                                            </tr>
+                                                                 
+                                        </table>
+                            </div> 
+                            <?php  
+                                
+                                    $sql = "SELECT * FROM note";
+                                            $resultat = $PDO ->query($sql);
+                                            while($ligne= $resultat->fetch(PDO::FETCH_ASSOC)){
+                                ?>
+                                                
+                                                        <table class="Anote">                
+                                                                <td> 
+                                                                    <a href="index.php?del=<?= $ligne['id'] ?>" 
+                                                                    onclick="return confirm('voulez vous vraiment supprimer cet note ?');">
+                                                                    <button class="delete">delete</button></a>
+                                                                </td>
+                                                                <td><?= htmlspecialchars($ligne['libelle'])?></td>
+                                                                <td><?= htmlspecialchars($ligne['date_note'])?></td>
+                                                                <td><?=htmlspecialchars($ligne['note'])?></td>
+                                                            
+                                                        </table>
+
+                                    <?php
+                                            }
+                                    ?>
+          </div>
+                            
+
+                            
+                                
+                                    
+                                
+</div>
+    
+</body>
+</html>

@@ -1,0 +1,50 @@
+/**style de la page note */
+.affichage {
+    width: 400px;
+    height: 40px;
+    background-color: var(--couleur-blanc);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 10px;
+    border-bottom: 1px solid var(--color-line);
+    padding: 5px;
+    margin: 0 5px 0 5px;
+}
+ .Anote{
+    background-color: var(--couleur-blanc);
+    width: 400px;
+    min-height: 40px;
+    padding: 5px;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 1px solid var(--color-line);
+    margin: 0 5px 0 5px;
+
+    
+}
+.Affich_Anote{
+    position: absolute;
+    top: 300px;
+    /*background-color: pink;*/
+    background-color: var(--color-pink);
+    width: 100%;
+    right: 50vh;
+    display: flex;
+    
+    
+}
+.delete{
+    background-color: var(--couleur-2nbleu);
+    border: none;
+    border-radius: 6px;
+    padding: 3px;
+    font-size: 15px;
+
+
+}
+td{
+    width: 100px;
+}

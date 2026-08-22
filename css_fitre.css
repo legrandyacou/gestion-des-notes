@@ -1,0 +1,70 @@
+body{
+    background-image: url("images/unseen-studio-s9CC2SKySJM-unsplash.jpg");
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+   justify-content:space-between;
+   align-items: center;
+   position: relative;
+}
+:root{
+    --couleur-bleu:#B6D8F2;
+     --couleur-2nbleu:#5CAFE7;
+     --couleur-blanc:#eff2f4;
+     --background-transparent: rgba(255, 255, 255, 0.1);
+     --colo-text:rgb(111, 107, 107);
+     --transition:all 0.3s ease ;
+     --color-line: rgb(192, 186, 186);
+     --color-pink:pink;
+     --color-black:black;
+     --color-teal:teal;
+}
+.filtre_prof{
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    opacity: 1;
+
+}
+.filtre_matiere{
+   
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    opacity: 0;
+}
+form{
+    margin-top: 30px;
+}
+.btn-subm{
+    background-color: var(--couleur-bleu);
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    width: 300px;
+    cursor: pointer;
+}
+input{
+        padding: 5px;
+        width: 300px;
+        margin-bottom: 10px;
+        
+}
+
