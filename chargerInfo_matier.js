@@ -12,6 +12,9 @@ document.querySelectorAll(".item-matiere").forEach(item =>{
 });
 
 function  chargerInfoMatiere(id ,elementClique){
+    if (!panelInfo || !message) {
+        return;
+    }
     message.textContent  = "chargement...";
     message.style.display = "block";
     panelInfo.classList.remove("visible");
@@ -25,9 +28,9 @@ function  chargerInfoMatiere(id ,elementClique){
                 message.style.display = "block";
                 return;
             }
-            libelle.innerHTML = Matiere.libelle;
-            coefficient.innerHTML = Matiere.coefficient;
-            heure.innerHTML = Matiere.heure;
+            libelle.textContent = Matiere.libelle_mat;
+            coefficient.textContent = Matiere.coefficient;
+            heure.textContent = Matiere.heure;
             message.style.display = "none";
             panelInfo.classList.add("visible");
             document.querySelectorAll(".item-matiere").forEach(el =>{

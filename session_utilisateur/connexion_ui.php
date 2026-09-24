@@ -7,15 +7,19 @@
         die("erreur".$e->getmessage());
     }
     if($_SERVER['REQUEST_METHOD']=="POST"){
-        if(!empty($_POST['pseudo']) && !empty($_POST['mdp'])){
-            $pseudo =htmlspecialchars($_POST['pseudo']);
+        if(!empty($_POST['gmail']) && !empty($_POST['mdp'])){
+            $gmail =htmlspecialchars($_POST['gmail']);
             $mdp_saisi =$_POST['mdp'];
            
-            $recuperuser = $connexion->prepare("SELECT * FROM utilisateur WHERE pseudo=?");
-            $recuperuser->execute(array($pseudo));
+            $recuperuser = $connexion->prepare("SELECT * FROM utilisateur WHERE gmail=?");
+            $recuperuser->execute(array($gmail));
             $utilisateur= $recuperuser->fetch();
             if($utilisateur && password_verify($mdp_saisi,$utilisateur['mdp'])){
-                $_SESSION['pseudo']=$pseudo;
+                session_regenerate_id(true);
+                $_SESSION['gmail']=$gmail;
+                $_SESSION['connecte']=true;
+                $_SESSION['nom']=$utilisateur['nom'];
+                $_SESSION['prenom']=$utilisateur['prenom'];
                 $_SESSION['id']=$utilisateur['id'];
                  header("Location: ../index.php");
                  exit();   
@@ -42,7 +46,7 @@
 </head>
 <body>
     <form action="#" method="post" align="center">
-    <input type="text" name="pseudo" placeholder="pseudo..."><br>
+    <input type="email" name="gmail" placeholder="email..."><br>
     <input type="password" name="mdp" id="mdp" placeholder="mot de passe"><br>
     <input type="submit" name="Envoyer">
     </form>

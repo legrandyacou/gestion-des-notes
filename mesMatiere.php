@@ -1,6 +1,6 @@
 <?php 
     require "db_connexion.php";
-    $smt = $PDO->query("SELECT id_matiere,libelle,coefficient,Heure FROM matieres ORDER BY libelle");
+    $smt = $PDO->query("SELECT id_matiere,libelle_mat,coefficient,heure FROM matieres ORDER BY libelle_mat");
     $lesMatieres = $smt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -51,12 +51,12 @@
 <body>
     <div class="liste">
         <h1>les matieres</h1>
-        <?php if(empty($matiere)):?>
+        <?php if(empty($lesMatieres)):?>
             <p>aucune matiere enregistre</p>
          <?php else: ?>
          <?php foreach($lesMatieres as $matiere): ?>
             <div class="item-mati" id="item-mati" data-id="<?= htmlspecialchars($matiere['id_matiere'])?>">
-             <?=  htmlspecialchars($matiere['libelle'])?>
+             <?=  htmlspecialchars($matiere['libelle_mat'])?>
             </div>
             <?php endforeach ;?>
         <?php endif ;?>    
@@ -76,7 +76,7 @@
         const  infoLibele = document.getElementById("infoLibele");
         const infoCoef = document.getElementById("infoCoef");
         const infoHeure = document.getElementById("infoHeure");
-            document.getElementById("item-mati").foreach(item =>{
+            document.querySelectorAll(".item-mati").forEach(item =>{
                 item.addEventListener("click",()=>{
                     const id = item.dataset.id;
                     chargerInfoMatiere(id , item);
@@ -89,29 +89,29 @@
                 cardInfo.classList.remove("visible");
 
                 var xhr = new XMLHttpRequest();
-                xhr.onReadystatechange = function(){
-                    if(this.readystate == 4 && this.status == 200){
+                xhr.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
                         const matiere = this.response;
                         if(matiere.erreur){
                             messageVide.textContent = matiere.erreur;
                             messageVide.style.display = "block";
                             return;
                         }
-                        infoLibele.innerHTML = matiere.libelle;
-                        infoCoef.innerHTML = matiere.coefficient;
-                        infoHeure.innerHTML = matiere.Heure;
+                        infoLibele.textContent = matiere.libelle_mat;
+                        infoCoef.textContent = matiere.coefficient;
+                        infoHeure.textContent = matiere.heure;
                         messageVide.style.display = "none";
                         cardInfo.classList.add("visible");
-                        document.querySelectorAll("item-mati").foreach(el => el.classList.remove("active"));
-                        el.elementclique.classList.add("active");
+                        document.querySelectorAll(".item-mati").forEach(el => el.classList.remove("actif"));
+                        elementClique.classList.add("actif");
 
-                    }else if(this.readystate == 4 && this.status == 404){
+                    }else if(this.readyState == 4 && this.status == 404){
                         messageVide.textContent = "matiere introuvable";
                         messageVide.style.display = "block";
                         cardInfo.classList.remove("visible");
                     }
                 }
-                xhr.open("GET","get_matiere.php",true);
+                xhr.open("GET","get_matiere.php?id="+encodeURIComponent(id),true);
                 xhr.responseType = "json";
                 xhr.send();
                 

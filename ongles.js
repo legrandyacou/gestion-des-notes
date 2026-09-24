@@ -1,4 +1,4 @@
-const listes = document.querySelectorAll('li');
+﻿const listes = document.querySelectorAll('li');
 const contenus = document.querySelectorAll('.contenu');
 
 const btnAJOUt= document.querySelector(".barre .btn-ajout");
@@ -85,5 +85,6 @@ for(let k = 0;k<contenuPeriode.length;k++){
     
 });
 });
+
 
 

@@ -15,11 +15,7 @@ session_start();
             $recuperuser->execute(array($gmail));
             $utilisateur= $recuperuser->fetch();
             if($utilisateur && password_verify($mdp_saisi,$utilisateur['mdp'])){
-                session_regenerate_id(true);
                 $_SESSION['gmail']=$gmail;
-                $_SESSION['nom']=$utilisateur['nom'];
-                $_SESSION['prenom']=$utilisateur['prenom'];
-                $_SESSION['connecte']=true;
                 $_SESSION['id']=$utilisateur['id'];
                  header("Location: ../index.php");
                  exit();   
@@ -184,7 +180,9 @@ session_start();
             </div>
                 <p id="message"></p>
                 <p id="succes"></p>
-           
-           
+            <script>
+                
+                    
+            </script>
 </body>
 </html>

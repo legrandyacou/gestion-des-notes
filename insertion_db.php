@@ -22,7 +22,7 @@
                                                 ]);
                                                 header("Location: " . $_SERVER['PHP_SELF']);
                                                     exit;
-                                                    echo "Enregistrement reussi <br>";
+                                                   
                                             }
                                             
 

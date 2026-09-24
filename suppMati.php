@@ -1,21 +1,14 @@
 <?php
+require_once "db_connexion.php";
 
-                                               // $countNote=0;
-                                                        require_once "db_connexion.php";
-                                                    if (isset($_GET['del'])) {
+$idMatiere = filter_input(INPUT_GET, 'del', FILTER_VALIDATE_INT);
+if ($idMatiere === false || $idMatiere === null) {
+    http_response_code(400);
+    exit('Identifiant de matière invalide.');
+}
 
-                                                        $id_matiere = $_GET['del'];
+$suppression = $PDO->prepare('DELETE FROM matieres WHERE id_matiere = :id_matiere');
+$suppression->execute(['id_matiere' => $idMatiere]);
 
-                                                        $sql = "DELETE FROM matieres WHERE id_matiere = :id_matiere";
-                                                        $suppression = $PDO->prepare($sql);
-
-                                                        $suppression->execute([
-                                                            ':id_matiere' => $id_matiere
-                                                        ]);
-
-                                                        header("Location: index.php" );
-                                                        //. $_SERVER['PHP_SELF']
-                                                        exit();
-                                                    }
-                                                    ?>
-                                                    
+header('Location: index.php');
+exit;

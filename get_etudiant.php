@@ -19,7 +19,7 @@ $etudiants = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$etudiants) {
     http_response_code(404);
-    echo json_encode(["erreur" => "Professeur introuvable."]);
+    echo json_encode(["erreur" => "Etudiant introuvable."]);
     exit;
 }
 

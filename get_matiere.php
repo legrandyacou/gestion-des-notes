@@ -9,7 +9,7 @@ if (!$id || !ctype_digit($id)) { //  !$id est vrai et $id est null et !ctype_dig
 }
 
 // Requête préparée pour éviter les injections SQL
-$stmMati = $PDO->prepare("SELECT id_matiere, libelle, coefficient,heure,id_prof FROM matieres WHERE id_matiere = ?");
+$stmMati = $PDO->prepare("SELECT id_matiere, libelle_mat, coefficient,heure FROM matieres WHERE id_matiere = ?");
 $stmMati->execute([$id]);
 $LesMatiere = $stmMati->fetch(PDO::FETCH_ASSOC);
 

@@ -1,74 +1,61 @@
 <?php
-    require_once "db_connexion.php";
-    $error = "";
-    $reponse = "";
-    
-    $id_Prof = $_GET['id_Prof'] ?? null;
-    if(isset($_POST['Enregistre'])){
-        if(!empty($_POST['nom']) && !empty($_POST['prenom']) 
-            && !empty($_POST['tel'])
-             && !empty($_POST['jcours']) 
-            && !empty($_POST['t_Prof']) ){
-                            $reponse = "ok VARIable";
-                            $nom =htmlspecialchars($_POST['nom']);
-                            $prenom =htmlspecialchars($_POST['prenom']);
-                            $tel =htmlspecialchars($_POST['tel']);
-                            $Jcours =htmlspecialchars($_POST['jcours']);
-                            $t_prof =htmlspecialchars($_POST['t_Prof']);
-                            $req = $PDO->prepare("UPDATE proffesseurs SET nom=? ,prenom=?,tel=? ,jcours=?,t_Prof=? WHERE id_Prof=? ");
-                            $req-> execute(array($nom ,$prenom,$tel ,$Jcours,$t_prof,$_POST['id_Prof']));
-                            
-                            $error = "Modification effectue .";
-            }else{
-                $error = "Vous devez rempli tous les champ.";
-            }
+require_once "db_connexion.php";
+
+$idProf = filter_input(INPUT_GET, 'id_prof', FILTER_VALIDATE_INT);
+if ($idProf === false || $idProf === null) {
+    http_response_code(400);
+    exit('Identifiant de professeur invalide.');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nom = trim($_POST['nom'] ?? '');
+    $prenom = trim($_POST['prenom'] ?? '');
+    $tel = trim($_POST['tel'] ?? '');
+    $jcours = trim($_POST['jcours'] ?? '');
+
+    if ($nom === '' || $prenom === '' || $tel === '' || $jcours === '') {
+        http_response_code(422);
+        exit('Tous les champs sont obligatoires.');
     }
+
+    $update = $PDO->prepare(
+        'UPDATE professeurs SET nom = :nom, prenom = :prenom, tel = :tel, jcours = :jcours
+         WHERE id_prof = :id_prof'
+    );
+    $update->execute([
+        'nom' => $nom,
+        'prenom' => $prenom,
+        'tel' => $tel,
+        'jcours' => $jcours,
+        'id_prof' => $idProf,
+    ]);
+
+    header('Location: index.php');
+    exit;
+}
+
+$query = $PDO->prepare('SELECT id_prof, nom, prenom, tel, jcours FROM professeurs WHERE id_prof = ?');
+$query->execute([$idProf]);
+$professeur = $query->fetch();
+if (!$professeur) {
+    http_response_code(404);
+    exit('Professeur introuvable.');
+}
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>double filter</title>
-    <link rel="stylesheet" href="css_fitre.css">
-        
-
+    <title>Modifier un professeur</title>
 </head>
 <body>
-                            <div class=" filtre_prof">
-                                    <div class="close_modProf">
-                                            <button hidden class="btn-close">&times;</button>
-                                            <?php if(!empty($error)):?>
-                                            <p style="color: blue; font-weight: bold;"> <?php echo $error ;?></p>
-                                            <?php 
-                                                
-                                        endif; ?>
-                                        <h1 style="color: blue; font-weight: bold;">Modifie proffesseur <?php echo $reponse ?> </h1>
-                                    </div>
-                                        <div class="formulaire_mod ">
-                                            
-    <?php
-            //require_once "db_connexion.php";
-
-    $sql = "SELECT * FROM proffesseurs WHERE id_Prof = ?";
-  $query = $PDO->prepare($sql);
-   $query->execute([$id_Prof]);
-        while($ligne=$query->fetch(PDO::FETCH_ASSOC)){ 
-    ?>
-     <form action="index.php" method="post" class="forMuLaire" name="forMu_pro" >
-        <input type="hidden" name="id_Prof" value="<?= $ligne['id_Prof'] ?>">
-         <input type="text" placeholder="nom " name="nom" value="<?=htmlspecialchars($ligne['nom']) ?>"><br>
-          <input type="text" placeholder="prenom" name="prenom" value="<?=htmlspecialchars($ligne['prenom'] )?>"><br>
-          <input type="tel" placeholder="0XXXXXXXXX" name="tel" value="<?=htmlspecialchars($ligne['tel'] )?>"><br>
-         <input type="text" placeholder="jours de cours" name="jcours" value="<?=htmlspecialchars($ligne['jcours'] )?>"> <br>
-        <input type="text" placeholder="cours" name="t_Prof" value="<?=htmlspecialchars($ligne['t_Prof']) ?>"> <br>
-         <input type="submit" value="Enregistre" class="btn-subm" name="Enregistre" >
+    <form action="filtre.php?id_prof=<?= (int) $professeur['id_prof'] ?>" method="post">
+        <input type="text" name="nom" value="<?= htmlspecialchars($professeur['nom']) ?>" required>
+        <input type="text" name="prenom" value="<?= htmlspecialchars($professeur['prenom']) ?>" required>
+        <input type="tel" name="tel" value="<?= htmlspecialchars($professeur['tel']) ?>" required>
+        <input type="text" name="jcours" value="<?= htmlspecialchars($professeur['jcours']) ?>" required>
+        <button type="submit">Enregistrer</button>
+        <a href="index.php">Annuler</a>
     </form>
- <?php
-    }
-?>  
-                                        </div>   
-
-                            </div>
 </body>
 </html>

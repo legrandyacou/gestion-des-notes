@@ -9,6 +9,7 @@ session_start();
   die("erreur".$e->getMessage());
 }
 if($_SERVER['REQUEST_METHOD']=="POST"){
+    $pseudo =htmlspecialchars($_POST['pseudo']);
     $nom = htmlspecialchars($_POST['nom']);
     $prenom = htmlspecialchars($_POST['prenom']);
     $gmail = htmlspecialchars($_POST['gmail']);
@@ -16,36 +17,34 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
     $ConFmdp =$_POST['ConFmdp'];
 
     
-    if(!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['gmail']) && !empty($_POST['mdp']) && !empty($_POST['ConFmdp'])){
+    if(!empty($_POST['pseudo']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['gmail']) && !empty($_POST['mdp']) && !empty($_POST['ConFmdp'])){
         
         if($mdp !== $ConFmdp){
             echo "les deux ne pas identique";
         }else{
             
-        $userRecup = $PDO->prepare("SELECT * FROM utilisateur WHERE nom=? AND prenom=? AND gmail=? AND mdp=?");
-        $userRecup->execute(array($nom,$prenom,$gmail,$mdp));
+        $userRecup = $PDO->prepare("SELECT * FROM utilisateur WHERE pseudo=? AND nom=? AND prenom=? AND gmail=? AND mdp=?");
+        $userRecup->execute(array($pseudo,$nom,$prenom,$gmail,$mdp));
         //$verify =$userRecup->fetch();
         
         if($userRecup->rowCount()>0){
             echo " ce pseudo existe deja";           
         }else{
-            session_regenerate_id(true);
             $mdp_hash =password_hash($mdp,PASSWORD_DEFAULT);
-            $query ="INSERT INTO utilisateur(nom,prenom,gmail,mdp) VALUES(:nom,:prenom,:gmail,:mdp)";
+            $query ="INSERT INTO utilisateur(pseudo,nom,prenom,gmail,mdp) VALUES(:pseudo,:nom,:prenom,:gmail,:mdp)";
             $insertion = $PDO->prepare($query);
             $insertion->execute([
-            
+            'pseudo'=>$pseudo,
             'nom'=>$nom,
             'prenom'=>$prenom,
-            'gmail'=>$gmail,
-            'mdp'=>$mdp_hash,  
+            'gmail'=>$gmail,  
                 ]);
             $id = $PDO->lastInsertId();// recuper directement ID auto incremente qui vien d'etre genere par mysql
+            $_SESSION['pseudo']=$pseudo;
             $_SESSION['nom']=$nom;
             $_SESSION['prenom']=$prenom;
             $_SESSION['gmail']=$gmail;
             $_SESSION['id']=$id;
-            $_SESSION['connecte']=true;
              header("Location: design-Inscription.php");
             exit();
         }
@@ -192,6 +191,9 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
             <form id="inscription" name="inscription" action="#" method="post">
                 
                 <h1 class="titre-conxion" >Bienvenue</h1>
+                <div class="box-nom">
+                     <input type="text" name="pseudo" placeholder="pseudo"><i class="fa-solid fa-user"></i>
+                </div>
                 <div class="box-nom">
                      <input type="text" name="nom" placeholder="Nom "><i class="fa-solid fa-user"></i>
                 </div>

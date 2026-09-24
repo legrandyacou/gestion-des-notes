@@ -1,21 +1,14 @@
 <?php
+require_once "db_connexion.php";
 
-                                               // $countNote=0;
-                                                        require_once "db_connexion.php";
-                                                    if (isset($_GET['del'])) {
+$idNote = filter_input(INPUT_GET, 'del', FILTER_VALIDATE_INT);
+if ($idNote === false || $idNote === null) {
+    http_response_code(400);
+    exit('Identifiant de note invalide.');
+}
 
-                                                        $id_Prof = $_GET['del'];
+$suppression = $PDO->prepare('DELETE FROM note WHERE id_note = :id_note');
+$suppression->execute(['id_note' => $idNote]);
 
-                                                        $sql = "DELETE FROM proffesseurs WHERE id_Prof = :id_Prof";
-                                                        $suppression = $PDO->prepare($sql);
-
-                                                        $suppression->execute([
-                                                            ':id_Prof' => $id_Prof
-                                                        ]);
-
-                                                        header("Location: index.php" );
-                                                        //. $_SERVER['PHP_SELF']
-                                                        exit();
-                                                    }
-                                                    ?>
-                                                    
+header('Location: index.php');
+exit;
