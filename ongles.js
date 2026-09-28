@@ -1,90 +1,92 @@
-﻿const listes = document.querySelectorAll('li');
-const contenus = document.querySelectorAll('.contenu');
+const listes = document.querySelectorAll('.list-side li[data-anim]');
+const contenus = document.querySelectorAll('.contenu[data-anim]');
 
-const btnAJOUt= document.querySelector(".barre .btn-ajout");
-const btnajoutMati= document.querySelector(".barre .btnAjoutMati");
-const btnajoutProf= document.querySelector(".barre .btnAjoutPro");
+listes.forEach((liste) => {
+    liste.addEventListener('click', () => {
+        const index = liste.dataset.anim;
 
-const forMn = document.querySelector(".box-form");
-const forMati = document.querySelector(".form_matiere");
-const forMpro = document.querySelector(".form_pro");
-
-const formulaire = document.querySelector(".forMuLaire");
-const btnForM =document.querySelector(".btn-subm");
-
-const buttonModif = document.querySelector(".modifie");
-
-
-    let index=0;
-listes.forEach(liste =>{
-        liste.addEventListener('click',()=>{
-            if(liste.classList.contains('active')){
-                return;
-            }else{
-                liste.classList.add('active');
-            }
-
-            index=liste.getAttribute('data-anim');
-        for(let i=0;i<listes.length;i++){
-            if(listes[i].getAttribute('data-anim')!= index){
-                listes[i].classList.remove('active');
-            }
-        }
-
-        for(let j=0;j<contenus.length;j++){
-            if(contenus[j].getAttribute('data-anim') == index){
-                    contenus[j].classList.add('activecontenu');
-            }else{
-                contenus[j].classList.remove('activecontenu');
-            }
-        }
+        listes.forEach((element) => {
+            element.classList.toggle('active', element === liste);
         });
-        
-
+        contenus.forEach((contenu) => {
+            contenu.classList.toggle('activecontenu', contenu.dataset.anim === index);
+        });
+    });
 });
 
-btnAJOUt.addEventListener("click",()=>{
-    forMn.classList.toggle("show");
-});
+const boutonsAjout = document.querySelectorAll('.navBtn-Ajout[data-form]');
+const fondFormulaires = document.querySelector('.all_form');
+const formulaires = document.querySelectorAll('.all_form [data-form]');
 
-btnajoutMati.addEventListener("click",()=>{
-    forMati.classList.toggle("show");
-});
-btnajoutProf.addEventListener("click",()=>{
-    forMpro.classList.toggle("show");
-});
-
-
-//onglet pour les perioides
-const btnPeriode = document.querySelectorAll('.sem');
-const contenuPeriode = document.querySelectorAll('.Cont_periode');
-let dedex =0;
-btnPeriode.forEach(periode =>{
-periode.addEventListener("click",()=>{
-if(periode.classList.contains('active_periode')){
-    return;
-}else{
-    periode.classList.add("active_periode");
-}
-
-dedex= periode.getAttribute("data-periode");
-for(let t =0 ; t<btnPeriode.length;t++){
-    if(btnPeriode[t].getAttribute('data-periode')!= dedex){
-        btnPeriode[t].classList.remove('active_periode');
+function fermerFormulaires() {
+    if (!fondFormulaires) {
+        return;
     }
+
+    fondFormulaires.classList.remove('is-open');
+    formulaires.forEach((formulaire) => {
+        formulaire.classList.remove('is-visible');
+    });
+    boutonsAjout.forEach((bouton) => {
+        bouton.classList.remove('active');
+    });
 }
 
-for(let k = 0;k<contenuPeriode.length;k++){
-    if(contenuPeriode[k].getAttribute('data-periode') == dedex){
-        contenuPeriode[k].classList.add('conteneur_periode');
-    }else{
-        contenuPeriode[k].classList.remove('conteneur_periode');
+function ouvrirFormulaire(id) {
+    if (!fondFormulaires) {
+        return;
     }
+
+    const formulaire = fondFormulaires.querySelector(`[data-form="${CSS.escape(id)}"]`);
+    const bouton = document.querySelector(`.navBtn-Ajout[data-form="${CSS.escape(id)}"]`);
+    if (!formulaire || !bouton) {
+        return;
+    }
+
+    formulaires.forEach((element) => {
+        element.classList.toggle('is-visible', element === formulaire);
+    });
+    boutonsAjout.forEach((element) => {
+        element.classList.toggle('active', element === bouton);
+    });
+    fondFormulaires.classList.add('is-open');
 }
 
-    
+boutonsAjout.forEach((bouton) => {
+    bouton.addEventListener('click', () => {
+        ouvrirFormulaire(bouton.dataset.form);
+    });
 });
+
+document.querySelectorAll('.btn-close').forEach((bouton) => {
+    bouton.addEventListener('click', fermerFormulaires);
 });
 
+fondFormulaires?.addEventListener('click', (event) => {
+    if (event.target === fondFormulaires) {
+        fermerFormulaires();
+    }
+});
 
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        fermerFormulaires();
+    }
+});
 
+// Onglets des périodes.
+const btnPeriode = document.querySelectorAll('.sem[data-periode]');
+const contenuPeriode = document.querySelectorAll('.Cont_periode[data-periode]');
+
+btnPeriode.forEach((periode) => {
+    periode.addEventListener('click', () => {
+        const index = periode.dataset.periode;
+
+        btnPeriode.forEach((element) => {
+            element.classList.toggle('active_periode', element === periode);
+        });
+        contenuPeriode.forEach((contenu) => {
+            contenu.classList.toggle('conteneur_periode', contenu.dataset.periode === index);
+        });
+    });
+});
