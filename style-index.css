@@ -28,6 +28,7 @@ body{
      --bootom-color: rgb(231, 231, 231);
      --couleur-contenu:rgb(222, 232, 255);
      --color-btn:RGB(252, 196, 25);
+      --color-btn_yello:RGB(252, 196, 25);
 }
 
 .photo{
@@ -74,6 +75,171 @@ body{
 .contenu1{
     padding: 20px;
 }
+/*style de formulaire*/
+
+/* --- Barre des boutons "Ajouter ..." --- */
+.barre {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+.barre .active{
+    color: var(--color-btn_yello);
+}
+.navBtn-Ajout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--couleur-contenu);
+    border: 0;
+    color: inherit;
+    
+    font-size: 15px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.navBtn-Ajout:hover {
+    background-color: var(--color-btn_yello);
+    transform: translateY(-2px);
+}
+
+.navBtn-Ajout i {
+    font-size: 14px;
+}
+
+/* --- Fond sombre derrière les formulaires (overlay) --- */
+.all_form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: none;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+.all_form.is-open {
+    display: flex;
+}
+
+/* --- La boîte blanche qui contient un formulaire --- */
+.box-form,
+.form_matiere,
+.form_pro {
+    display: none;
+    background: #ffffff;
+    width: 380px;
+    max-width: 90%;
+    border-radius: 12px;
+    padding: 25px 30px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    animation: apparition 0.25s ease-out;
+}
+
+.box-form.is-visible,
+.form_matiere.is-visible,
+.form_pro.is-visible {
+    display: block;
+}
+
+@keyframes apparition {
+    from { opacity: 0; transform: translateY(-15px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- En-tête de la boîte (titre + croix de fermeture) --- */
+.close {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.close h1 {
+    font-size: 18px;
+    color: var(--color-black);
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    color: black;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.btn-close:hover {
+    color: #e05353;
+}
+
+/* --- Le formulaire lui-même --- */
+.formulaire {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.forMuLaire input,
+.forMuLaire select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    background-color: #fafafa;
+    box-sizing: border-box;         /* évite que le padding n'agrandisse la largeur */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.forMuLaire input:focus,
+.forMuLaire select:focus {
+    outline: none;
+    border-color: #2e6e5e;
+    box-shadow: 0 0 0 3px rgba(46, 110, 94, 0.15);
+    background-color: #fff;
+}
+
+.forMuLaire input::placeholder {
+    color: #aaa;
+}
+
+/* --- Bouton d'envoi --- */
+.btn-subm {
+    background-color: #2e6e5e;
+    color: #fff;
+    border: none;
+    padding: 11px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-subm:hover {
+    background-color: var(--color-btn_yello);
+}
+
+
+
+
+
+
 .side-bar_deroul{
    /* background-color:var(--couleur-2nbleu) ;*/
     height: 100vh;
@@ -158,7 +324,7 @@ padding: 30px;
 .welcom{
     height: 30vh;
    mix-blend-mode: multiply;
-   color: var(--couleur-2nbleu);
+   color: var(--couleur-contenu);
     width: 40%;
     display: flex;
     justify-content: center;
@@ -239,7 +405,7 @@ padding: 30px;
     margin: 30px 10px 0 10px;
     width: 60%;
     height: 8vh;
-    background-color: var(--c);
+    /*background-color: var(--c);*/
 }
 .barre .navBtn-Ajout{
     /*width: 30%;*/
@@ -264,3 +430,18 @@ padding: 30px;
     width: 100%;
     position: relative;
     padding-top: 10px;
+}
+/*style imfo prof*/
+.liste_prof{
+    border: 1px solid ;
+}
+.info_prof{
+    border: 1px solid;
+}
+.contenu_liste_info{
+    border: 1px solid var(--color-btn_yello);
+    padding: 10px;
+    display: flex;
+
+   
+}

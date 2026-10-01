@@ -104,21 +104,20 @@
                     </div>
         </div>
 </section>
-   <section class="contenu activecontenu contenu2" data-anim="2">    
+   <section class="contenu contenu2" data-anim="2">
 
             
                       <div class="barre">
-                                <h1 class="btn-ajout navBtn-Ajout"><i class="fa-solid fa-plus"></i> Ajouter note</h1>
-                                <h1 class="btnAjoutMati navBtn-Ajout"><i class="fa-solid fa-plus"></i> Ajouter matiere</h1>
-                                <h1 class="btnAjoutPro navBtn-Ajout"><i class="fa-solid fa-plus"></i> Ajouter proffesseur</h1>
-                                <h1 class="btnAjouteven navBtn-Ajout"><i class="fa-solid fa-plus"></i> Ajouter evenement</h1>
+                                <button type="button" class="active navBtn-Ajout" data-form="1"><i class="fa-solid fa-plus"></i> Ajouter note</button>
+                                <button type="button" class="navBtn-Ajout" data-form="2"><i class="fa-solid fa-plus"></i> Ajouter matiere</button>
+                                <button type="button" class="navBtn-Ajout" data-form="3"><i class="fa-solid fa-plus"></i> Ajouter professeur</button>
                       </div>
 
                       
                       <div class="all_form">
-                                <div class="box-form">
+                                <div class="box-form " data-form="1">
                                     <div class="close">
-                                            <button hidden class="btn-close">&times;</button>
+                                            <button type="button" class="btn-close" aria-label="Fermer">&times;</button>
                                         <h1>ajout de note</h1>
                                     </div>
                                         <div class="formulaire">
@@ -157,9 +156,9 @@
 
                             </div>
 
-                            <div class="form_matiere">
+                            <div class="form_matiere" data-form="2">
                                     <div class="close">
-                                            <button hidden class="btn-close">&times;</button>
+                                            <button type="button" class="btn-close" aria-label="Fermer">&times;</button>
                                         <h1>ajout de matiere</h1>
                                     </div>
                                         <div class="formulaire">
@@ -180,9 +179,9 @@
                                         </div>   
 
                             </div>
-                            <div class=" form_pro">
+                            <div class="box-form form_pro" data-form="3">
                                     <div class="close">
-                                            <button hidden class="btn-close">&times;</button>
+                                            <button type="button" class="btn-close" aria-label="Fermer">&times;</button>
                                         <h1>ajout de proffesseur</h1>
                                     </div>
                                         <div class="formulaire">
@@ -310,8 +309,8 @@
    
         
 </section>
-   <section class="contenu contenu4 " data-anim="4">
-    
+   <section class="contenu contenu4 " id="contenu4" data-anim="4">
+    <div class="contenu_liste_info">
     <div class="liste_prof" id="liste_prof">
         <h1>Professeur</h1>
 
@@ -340,9 +339,13 @@
             <strong>Matière: </strong><span id="infoMatiere"></span><br>
             <strong>Disponibilité: </strong><span id="infoDispo"></span><br>
         </div>
-        <div class="info_Note_moy">
+        
+    </div>
+     </div>
+    <!-- affichage de note -moyenne-->
+     <div class="info_Note_moy">
             <div class="onglet_period">
-                <div class="box_onglet">
+                <div class="box_onglet"><!--peiodes-->
                     <button class="btn_sem1 sem active_periode" data-periode="1">Semestre 1</button>
                     <button class="btn_sem2  sem"  data-periode="2">Semestre 2</button>
                 </div>
@@ -367,7 +370,7 @@
                 <h1>Calcul de moyenne</h1>
             </div>
         </div>
-    </div>
+           
 </section>
    <section class="contenu " data-anim="5">
         <h1>connexion</h1>
@@ -375,8 +378,9 @@
 </section> 
 
    <script src="ongles.js"></script>
-   <script src="chargerInfo_prof.js"></script>
-   <script src="chargerInfo_matier.js"></script>
+   <script src="fonction_js/chargerInfo_prof.js"></script>
+   <script src="fonction_js/chargerInfo_matier.js"></script>
+   <script src="fonction_js/btn-submite.js"></script>
                             
 </body>
 </html>
