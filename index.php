@@ -281,73 +281,75 @@
                         <p class="messagEvide" id="messagEvide">cliquez sur une matiere pour voir ses informations</p>
         <div class="info_matiere" id="info_matiere">
             
-            <div class="info_detail">
+            <div class="info_detail_matiere">
             <h1 id="infoLib">libelle</h1>
              <strong>Coefficient: </strong><span id="infocoeff"></span><br>
             <strong>professeur: </strong><span id="infoPrenom"></span> <br>            
             <strong>Heure: </strong><span id="infoHeure"></span><br>
             
          </div>
-        <div class="info_Note_moy">
-            <div class="onglet_period">
-                <div class="box_onglet">
-                    <button class="btn_sem1_mat  active_periode sem" data-periode="1">Semestre 1</button>
-                    <button class="btn_sem2_mat sem" data-periode="2">Semestre 2</button>
-                </div>
-                <div class="conteneur_sem1 Cont_periode" data-periode="1">
-                    <h1>Semestre 1</h1>
-                    
-                </div>
-                <div class="conteneur_sem2 Cont_periode" data-periode="2"><h1>Semestre 1</h1></div>
-            </div>
-            <div class="calcule_moy">
-                <h1>Calcul de moyenne</h1>
-            </div>
-        </div>
+            <!--
+            <div class="info_Matier">
+                    <div class="onglet_period_matiere">
+                        <div class="box_onglet_matier">
+                            <button class="btn_sem1_mat  active_periode sem" data-periode="1">Semestre 1</button>
+                            <button class="btn_sem2_mat sem" data-periode="2">Semestre 2</button>
+                        </div>
+                        <div class="conteneur_sem1 Cont_periode" data-periode="1">
+                            <h1>Semestre 1</h1>
+                            
+                        </div>
+                        <div class="conteneur_sem2 Cont_periode" data-periode="2"><h1>Semestre 1</h1></div>
+                    </div>
+                        <div class="calcule_moy">
+                            <h1>Calcul de moyenne</h1>
+                        </div>
+            </div>-->
         </div>
 
    
         
 </section>
+
    <section class="contenu contenu4 " id="contenu4" data-anim="4">
-    <div class="contenu_liste_info">
-    <div class="liste_prof" id="liste_prof">
-        <h1>Professeur</h1>
+       
+                 <div class="bigContent_test">
+            <div class="liste_prof" id="liste_prof">
+            <h1>Professeur</h1>
 
-        <?php if(empty($professeur)): ?>
-            <p>Aucun professeur enregistré</p>
-        <?php else: ?>
-            <?php foreach($professeur as $prof): ?>
-                <div class="item-prof" data-id="<?= htmlspecialchars($prof['id_prof']) ?>">
-                    <a href="filtre.php?id_prof=<?= htmlspecialchars($prof['id_prof']) ?>" onclick="return confirm('voulez vous vraiment modifier ce professeur ?');"> <button type="button" class="delete modifie"><i class="fa-solid fa-recycle"></i></button></a>
-                                <a href="suppProf.php?del=<?= htmlspecialchars($prof['id_prof']) ?>" onclick="return confirm('voulez vous vraiment supprimer ce professeur ?');"> <button type="button" class="delete"><i class="fa-regular fa-trash-can"></i></button></a>
-                              
-                    <?= htmlspecialchars($prof['nom']) . " " . htmlspecialchars($prof['prenom']) ?>
-                </div>    
-            <?php endforeach; ?>
-        <?php endif; ?> 
-    </div>
-
-    <p id="messageVide" class="messageVide">cliquez sur un professeur pour voir ses informations</p>
-<div class="info_prof" id="info_prof">
-                
-        <div class="info_detail">
-            <h1 id="infoNom">Nom</h1>
-             <strong>prenom: </strong><span id="infoPreNom"></span> <br>
-
-            <strong>Numéro de téléphone: </strong><span id="infoTel"></span><br>
-            <strong>Matière: </strong><span id="infoMatiere"></span><br>
-            <strong>Disponibilité: </strong><span id="infoDispo"></span><br>
+            <?php if(empty($professeur)): ?>
+                <p>Aucun professeur enregistré</p>
+            <?php else: ?>
+                <?php foreach($professeur as $prof): ?>
+                    <div class="item-prof" data-id="<?= htmlspecialchars($prof['id_prof']) ?>">
+                        <a href="filtre.php?id_prof=<?= htmlspecialchars($prof['id_prof']) ?>" onclick="return confirm('voulez vous vraiment modifier ce professeur ?');"> <button type="button" class="delete modifie"><i class="fa-solid fa-recycle"></i></button></a>
+                                    <a href="suppProf.php?del=<?= htmlspecialchars($prof['id_prof']) ?>" onclick="return confirm('voulez vous vraiment supprimer ce professeur ?');"> <button type="button" class="delete"><i class="fa-regular fa-trash-can"></i></button></a>
+                                
+                        <?= htmlspecialchars($prof['nom']) . " " . htmlspecialchars($prof['prenom']) ?>
+                    </div>    
+                <?php endforeach; ?>
+            <?php endif; ?> 
         </div>
-        
-    </div>
-     </div>
-    <!-- affichage de note -moyenne-->
-     <div class="info_Note_moy">
+        <p id="messageVide" class="messageVide">cliquez sur un professeur pour voir ses informations</p>
+        <div class="contenuInfo_test">
+            <div class="elementInfo">
+                <div class="info_prof" id="info_prof">
+                                    <div class="info_detail">
+                        <h1 id="infoNom">Nom</h1>
+                        <strong>prenom: </strong><span id="infoPreNom"></span> <br>
+
+                        <strong>Numéro de téléphone: </strong><span id="infoTel"></span><br>
+                        <strong>Matière: </strong><span id="infoMatiere"></span><br>
+                        <strong>Disponibilité: </strong><span id="infoDispo"></span><br>
+                    </div>
+                                    
+                                </div>
+                                <!--deuxiement element-->
+                                <div class="info_Note_moy">
             <div class="onglet_period">
                 <div class="box_onglet"><!--peiodes-->
-                    <button class="btn_sem1 sem active_periode" data-periode="1">Semestre 1</button>
-                    <button class="btn_sem2  sem"  data-periode="2">Semestre 2</button>
+                    <button class="btn_sem1 semBtn active_periode" data-periode="1">Semestre 1</button>
+                    <button class="btn_sem2  semBtn"  data-periode="2">Semestre 2</button>
                 </div>
                 <div class="conteneur_sem1 Cont_periode conteneur_periode" data-periode="1" >
                     <h1>Semestre 1</h1>
@@ -355,25 +357,31 @@
                     <div id="notesProfesseur">
                         <p>Aucune note enregistré.</p>
                     </div>
-                    <div id="moyenneMatiere">
-
-                        <p>Aucune moyenne</p>
-                        
-                    </div>
+                    
                 </div>
-                <div class="conteneur_sem2 Cont_periode " data-periode="2">
+                <div class="conteneur_sem2 Cont_periode" hidden data-periode="2">
                     <h1>Semestre 2</h1>
                     <button type="button">calcule</button>
             </div>
             </div>
-            <div class="calcule_moy">
-                <h1>Calcul de moyenne</h1>
+    
+        </div>      
+
             </div>
+                    <div class="calcule_moy">
+                             <h1 style="color: white;text-align: center;" >Calcul de moyenne</h1>
+                        <div id="moyenneMatiere">
+                            <p>Aucune moyenne</p>
+                        </div>
+            </div>
+
         </div>
+</div>
            
-</section>
-   <section class="contenu " data-anim="5">
-        <h1>connexion</h1>
+        
+    </section>
+   <section class="contenu" data-anim="5">
+      
         
 </section> 
 

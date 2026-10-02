@@ -22,7 +22,7 @@ function chargerInfoProf(id ,elementClique){
     }
     messageVide.textContent = "chargement...";
     messageVide.style.display = "block";
-    cardInfo.classList.remove("visible");
+    cardInfo.classList.remove("is-visible");
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(){
         if(this.readyState == 4 && this.status == 200){
@@ -30,7 +30,6 @@ function chargerInfoProf(id ,elementClique){
             if(profs.erreur){
                 messageVide.textContent = profs.erreur;
                 messageVide.style.display = "block";
-                cardInfo.classList.remove("visible");
                 return;
             }
             //affichage des info prof
@@ -53,11 +52,12 @@ function chargerInfoProf(id ,elementClique){
                     noteElement.textContent =
                         `${note.libelle_mat} - ${note.date_note} - ${note.note}/20`;
                     notesProfesseur.appendChild(noteElement);
+                    noteElement.classList.add("styleNote"); // en test
                 });
             }
 //calcule de moyennes
             moyenneMatiere.replaceChildren();
-            if (Array.isArray(profs.moyennes) && profs.moyennes.length > 0) {
+            if (Array.isArray(profs.moyennes) && profs.moyennes.length > 0){
                 profs.moyennes.forEach(m => {
                     const moyenneMati = document.createElement("div");
                     moyenneMati.className = "boxMoy";
@@ -73,7 +73,7 @@ function chargerInfoProf(id ,elementClique){
                 moyenneMatiere.appendChild(messageMoyenne);
             }
             messageVide.style.display = "none";
-            cardInfo.classList.add("visible");
+            cardInfo.classList.add("is-visible");
             document.querySelectorAll(".item-prof").forEach(el =>{
                 el.classList.remove("actif");
             });

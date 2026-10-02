@@ -268,9 +268,10 @@ padding: 30px;
     margin-bottom: 30px;
      align-items: center;
      cursor: pointer;
-    padding: 7px;
-     width: 100%;
-      border: 2px solid transparent;
+    padding: 8px;
+     border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background-color: var(--color-black);
 }
 .list-side .fa-solid{
  color: var(--color-btn);
@@ -278,8 +279,8 @@ padding: 30px;
 .list-side li:hover{
     background-color: var(--color-hover-blue);
     border-radius: 15px;
-    padding: 7px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
    
 }
 
@@ -431,17 +432,83 @@ padding: 30px;
     position: relative;
     padding-top: 10px;
 }
+/*style de test*/
 /*style imfo prof*/
-.liste_prof{
-    border: 1px solid ;
+.liste_matiere,.liste_prof{
+    background-color: var(--color-black);
+    width: 23%;
+    padding: 10px ;
+    border-radius: 5px;
 }
-.info_prof{
-    border: 1px solid;
-}
-.contenu_liste_info{
-    border: 1px solid var(--color-btn_yello);
-    padding: 10px;
-    display: flex;
 
+#info_prof{
+    border: 1px solid var(--background-transparent);
+    margin-bottom: 10px;
+     padding: 10px;
+    
+}
+.item-matiere,.item-prof{
+    border: 1px solid transparent;
+    display: flex;
+    gap: 5px ;
+    background-color: #ffffffff;
+    color: #333;
+    margin-bottom: 5px;
+    padding: 3px;
+
+}
+
+.bigContent_test{
+    display: flex;
+    height: 100vh;
+}
+.elementInfo{
+    border: 1px solid yellow;
+    width: 60%;
    
+
+}
+.calcule_moy{
+    height: 97vh;
+    width: 40%;
+    margin-left: 5px;
+    background-color: pink;
+    padding: 5px;
+}
+.info_Note_moy{
+    border: 1px solid blue;
+    height: 80vh;
+    
+}
+.contenuInfo_test{
+    border: 1px solid;
+    width: 80%;
+    display: flex;
+    padding: 10px;
+}
+.box_onglet{
+    background-color: #ffff;
+    color: black;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+.Cont_periode{
+    background-color: #f9f6f6;
+    padding: 5px;
+    border-top: 1px solid ;
+    height: 71vh;
+}
+.btn_sem1{
+    margin-bottom: 5px;
+}
+.semBtn{
+ font-size: 20px;
+ font-weight: 700;
+}
+/* style note*/
+.styleNote{
+    border: 1px solid ;
+    padding: 3px;
+    border: 5px;
 }
