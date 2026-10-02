@@ -59,6 +59,9 @@
                 <li data-anim="6">  <i class="fa-solid fa-circle-user"></i> <span class="hidden">profile</span> </li>
                 <li data-anim="4"><i class="fa-solid fa-chalkboard-user"></i> <span class="hidden">Proffesseur</span> </li>
                 <?php if(isset($_SESSION['connecte']) && $_SESSION['connecte'] == true): ?>
+                    <h4 style="position: absolute;
+                    bottom: 70px;width: 130px; color:#fff;margin-bottom: 10px;
+                   "><?php echo htmlspecialchars($_SESSION['nom']?? '')?></h4>
                     <li class="bottoM" data-anim="5"><a href="deconnection.php" ><i class="fa-solid fa-right-to-bracket"></i> <span class="hidden">deconnexion</span> </a></li>  
                  <?php  else: ?>
                         <li class="bottoM" data-anim="5"><a href="formulaire/design-connexion.php" target="_blank" id="lien_connexion" ><i class="fa-solid fa-right-to-bracket"></i> <span class="hidden">connexion</span> </a></li>   
@@ -209,59 +212,51 @@
                                  
                                 
 </section>
-<section class="contenu contenu6 " data-anim="6">
-    <h1>profile</h1>
-     <div class="box-sesion">
-        
-         <div class="session_ui">
-            <div class="sec-photo">
-                <div class="box-photo">
-                    <div class="photo_ui"></div>
+<section class="contenu contenu_profile " data-anim="6">
+    
+     <div class="conteneurProfile">
+            <div class="cteneurPhoto_nom">
+                <div>
+                    <div class="imgProfile"></div>
                 </div>
-                <div class="action_nom-p">
-                    <button>Ajouter une nouvel photo</button>
-                    <h3><?php echo htmlspecialchars($_SESSION['nom'] ?? '')." ".htmlspecialchars($_SESSION['prenom'] ?? '')?></h3>
-                </div>
-             </div>                                                    
-                
-                <div class="sec-detail">
-                        <div class="title_detail_info">
-                            <h3>info perso</h3>   <button>edit</button>                                               
-                        </div>                                                               
-                <div class="box_detail">
-                    <div class="boxEl">
-                        <h3>date de naissance</h3><br>
-                        <span>naissance</span>
+                    <div>
+                        <button class="photo_Ajout">Ajouter une photo</button>
+                    
+                    <h3 class="nom_u"><?php echo htmlspecialchars($_SESSION['nom'] ?? '')." ".htmlspecialchars($_SESSION['prenom'] ?? '')?></h3>
+                    
                     </div>
-                    <div class="boxE2">
-                        <h3>Gmail</h3><br>
-                        <span><?php echo $_SESSION['gmail'] ?></span>
-                    </div>
-                    <div class="boxE3">
-                        <h3>telephone</h3><br>  
-                    </div>                                                   
-                </div>                                                
+                    
             </div>
-            <div class="sec-detail">
-                        <div class="title_detail_info">
-                            <h3>info scolaire</h3><button>edit</button>                                               
-                        </div>                                                               
-                <div class="box_detail">
-                    <div class="boxEl">
-                        <h3>matricule</h3><br>
-                        <span>ex:16047685H</span>
+            <div class="infoPerso">
+                    <h2>Information Personnel</h2>
+                    <div class="info_Personnel">
+                        <div>
+                            <h3>Date de naissance</h3>
+                            <span></span>
+                        </div>
+                        <div>
+                            <h3>Gmail</h3>
+                            <span><?php echo $_SESSION['gmail'] ?></span>
+                        </div>
+                        <div>
+                            <h3>Telephone</h3>
+                            <span>05 96 04 86 85</span>
+                        </div>
+                        
                     </div>
-                    <div class="boxE2">
-                        <h3>filiere</h3><br>
+            </div>
+            <div class="infoScolaire">
+                    <h2>Information scolaire</h2>
+                    <div class="info_Scolaire">
+                        <div>
+                            <h3>Matricule</h3>
+                            <span>16 047 151 H</span>
+                        </div>
+                        <div><h3>Filiere</h3> <span></span></div>
+                        <div><h3>Classe</h3> <span></span></div>
                     </div>
-                    <div class="boxE3">
-                        <h3>classe</h3><br>  
-                    </div>                                                   
-                </div>                                                
             </div>
         </div>
-          
-    </div>
         
 </section> 
 <!-- page des matiere--> 
@@ -380,8 +375,8 @@
            
         
     </section>
-   <section class="contenu" data-anim="5">
-      
+   <section class="contenu " data-anim="5">
+        
         
 </section> 
 
@@ -390,5 +385,5 @@
    <script src="fonction_js/chargerInfo_matier.js"></script>
    <script src="fonction_js/btn-submite.js"></script>
                             
-</body>
+</body> 
 </html>
