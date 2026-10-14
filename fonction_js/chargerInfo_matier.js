@@ -11,6 +11,11 @@ document.querySelectorAll(".item-matiere").forEach(item =>{
     });
 });
 
+const premiereMatiere = document.querySelector(".item-matiere");
+if (premiereMatiere) {
+    chargerInfoMatiere(premiereMatiere.dataset.id, premiereMatiere);
+}
+
 function  chargerInfoMatiere(id ,elementClique){
     if (!panelInfo || !message) {
         return;

@@ -39,7 +39,7 @@ if (!$professeur) {
           $stmNotes = $PDO->prepare(
               "SELECT id_note, libelle_mat, date_note, note, id_prof
                FROM note
-            WHERE id_prof = ? AND id_periodeNote = 1
+            WHERE id_prof = ? AND id_periodeNote = 2
                ORDER BY date_note DESC, id_note DESC " 
           );
           //Note de la periode 2

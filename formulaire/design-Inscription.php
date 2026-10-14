@@ -19,7 +19,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
     if(!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['gmail']) && !empty($_POST['mdp']) && !empty($_POST['ConFmdp'])){
         
         if($mdp !== $ConFmdp){
-            echo "les deux ne pas identique";
+            echo "les deux mots de passe ne sont pas identiques";
         }else{
             
         $userRecup = $PDO->prepare("SELECT * FROM utilisateur WHERE nom=? AND prenom=? AND gmail=? AND mdp=?");
@@ -27,9 +27,9 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
         //$verify =$userRecup->fetch();
         
         if($userRecup->rowCount()>0){
-            echo " ce pseudo existe deja";           
+            echo "cet email existe deja";           
         }else{
-            session_regenerate_id(true);
+            //session_regenerate_id(true);
             $mdp_hash =password_hash($mdp,PASSWORD_DEFAULT);
             $query ="INSERT INTO utilisateur(nom,prenom,gmail,mdp) VALUES(:nom,:prenom,:gmail,:mdp)";
             $insertion = $PDO->prepare($query);
@@ -46,7 +46,22 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
             $_SESSION['gmail']=$gmail;
             $_SESSION['id']=$id;
             $_SESSION['connecte']=true;
-             header("Location: design-Inscription.php");
+
+//reinitialisation de session
+           $_SESSION=[];
+            if(ini_get("session.use_cookies")){
+                $params = session_get_cookie_params();
+                setcookie(
+                    session_name(),'',time() -42000,
+                    $params["path"], $params["domain"],
+                    $params["secure"], $params["httponly"]
+                );
+            }
+            session_destroy();
+            session_start();
+            session_regenerate_id(true);
+            
+             header("Location: design-connexion.php");
             exit();
         }
         }
