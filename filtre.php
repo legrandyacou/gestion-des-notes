@@ -1,10 +1,33 @@
 <?php
 require_once "db_connexion.php";
+require_once "session_config.php";
+
+if (
+    empty($_SESSION['connecte']) ||
+    $_SESSION['connecte'] !== true ||
+    empty($_SESSION['id_user'])
+) {
+    header('Location: formulaire/design-connexion.php');
+    exit;
+}
 
 $idProf = filter_input(INPUT_GET, 'id_prof', FILTER_VALIDATE_INT);
-if ($idProf === false || $idProf === null) {
+if ($idProf === false || $idProf === null || $idProf < 1) {
     http_response_code(400);
     exit('Identifiant de professeur invalide.');
+}
+$idUser = (int) $_SESSION['id_user'];
+
+$query = $PDO->prepare(
+    'SELECT id_prof, nom, prenom, tel, jcours
+     FROM professeurs
+     WHERE id_prof = ? AND id_user = ?'
+);
+$query->execute([$idProf, $idUser]);
+$professeur = $query->fetch();
+if (!$professeur) {
+    http_response_code(404);
+    exit('Professeur introuvable.');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -20,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $update = $PDO->prepare(
         'UPDATE professeurs SET nom = :nom, prenom = :prenom, tel = :tel, jcours = :jcours
-         WHERE id_prof = :id_prof'
+         WHERE id_prof = :id_prof AND id_user = :id_user'
     );
     $update->execute([
         'nom' => $nom,
@@ -28,18 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'tel' => $tel,
         'jcours' => $jcours,
         'id_prof' => $idProf,
+        'id_user' => $idUser,
     ]);
 
     header('Location: index.php');
     exit;
-}
-
-$query = $PDO->prepare('SELECT id_prof, nom, prenom, tel, jcours FROM professeurs WHERE id_prof = ?');
-$query->execute([$idProf]);
-$professeur = $query->fetch();
-if (!$professeur) {
-    http_response_code(404);
-    exit('Professeur introuvable.');
 }
 ?>
 <!DOCTYPE html>

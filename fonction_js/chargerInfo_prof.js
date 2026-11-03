@@ -1,4 +1,4 @@
-const cardInfo= document.getElementById("info_prof");
+const cardInfo = document.getElementById("info_prof");
 const messageVide = document.getElementById("messageVide");
 const infoNom = document.getElementById("infoNom");
 const infoPrenom = document.getElementById("infoPreNom");
@@ -6,85 +6,124 @@ const infoTel = document.getElementById("infoTel");
 const infoMatiere = document.getElementById("infoMatiere");
 const infoDispo = document.getElementById("infoDispo");
 const notesProfesseur = document.getElementById("notesProfesseur");
+const notesProfesseur2emep = document.getElementById("notesProfesseur_2emep");
 const moyenneMatiere = document.getElementById("moyenneMatiere");
+const boutonCalculMoyenne = document.getElementById("btnCalculMoy1");
+let requeteProfesseur = null;
+let moyennesProfesseur = [];
 
+document.querySelectorAll(".item-prof").forEach((item) => {
+    item.addEventListener("click", (event) => {
+        if (event.target.closest("form")) {
+            return;
+        }
 
-document.querySelectorAll(".item-prof").forEach(item => {
-    item.addEventListener("click",()=>{
-        const id = item.dataset.id;
-        chargerInfoProf(id ,item);
+        chargerInfoProf(item.dataset.id, item);
     });
 });
 
-function chargerInfoProf(id ,elementClique){
-    if (!cardInfo || !messageVide || !notesProfesseur) {
+boutonCalculMoyenne?.addEventListener("click", () => {
+    if (!moyenneMatiere) {
         return;
     }
-    messageVide.textContent = "chargement...";
-    messageVide.style.display = "block";
-    cardInfo.classList.remove("is-visible");
-    const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-            const profs = this.response; 
-            if(profs.erreur){
-                messageVide.textContent = profs.erreur;
-                messageVide.style.display = "block";
-                return;
-            }
-            //affichage des info prof
-            infoNom.textContent = profs.nom;
-            infoPrenom.textContent = profs.prenom; 
-            infoTel.textContent = profs.tel;
-            infoMatiere.textContent = profs.matiere_libelle || profs.libelle_mat || '';
-            infoDispo.textContent = profs.jcours;
-//affichage des note par prof
-            notesProfesseur.replaceChildren();
-            if (!Array.isArray(profs.notes) || profs.notes.length === 0) {
-                const messageNotes = document.createElement("p");
-                messageNotes.textContent = "Aucune note enregistrée.";
-                notesProfesseur.appendChild(messageNotes);
-            } else {
-                profs.notes.forEach(note => {
-                    const noteElement = document.createElement("div");
-                    noteElement.className = "boxNote";
-                    noteElement.dataset.id = note.id_note;
-                    noteElement.textContent =
-                        `${note.libelle_mat} - ${note.date_note} - ${note.note}/20`;
-                    notesProfesseur.appendChild(noteElement);
-                    noteElement.classList.add("styleNote"); // en test
-                });
-            }
-//calcule de moyennes
-            moyenneMatiere.replaceChildren();
-            if (Array.isArray(profs.moyennes) && profs.moyennes.length > 0){
-                profs.moyennes.forEach(m => {
-                    const moyenneMati = document.createElement("div");
-                    moyenneMati.className = "boxMoy";
-                    document.getElementById("btnCalculMoy1").addEventListener("click",()=>{
-                        moyenneMati.textContent = `${m.libelle_mat} : ${Number(m.moyenne).toFixed(2)}`;
-                        moyenneMatiere.appendChild(moyenneMati);
-                    });
-                    
-                });
-            } else {
-                const messageMoyenne = document.createElement("p");
-                messageMoyenne.textContent = "Aucune moyenne calculée.";
-                moyenneMatiere.appendChild(messageMoyenne);
-            }
-            messageVide.style.display = "none";
-            cardInfo.classList.add("is-visible");
-            document.querySelectorAll(".item-prof").forEach(el =>{
-                el.classList.remove("actif");
-            });
-            elementClique.classList.add("actif");
-        }else if(this.readyState == 4 && this.status == 404){
-            messageVide.textContent = "aucune information enregistre";
-            messageVide.style.display = "block";
-        }
-    }
-    xhr.open("GET","get_profs.php?id="+ encodeURIComponent(id),true);
-    xhr.responseType = "json";
-    xhr.send();
 
+    moyenneMatiere.replaceChildren();
+    if (moyennesProfesseur.length === 0) {
+        const message = document.createElement("p");
+        message.textContent = "Aucune moyenne calculée.";
+        moyenneMatiere.appendChild(message);
+        return;
+    }
+
+    moyennesProfesseur.forEach((moyenne) => {
+        const element = document.createElement("div");
+        element.className = "boxMoy";
+        element.textContent =
+            `${moyenne.libelle_mat} : ${Number(moyenne.moyenne).toFixed(2)}`;
+        moyenneMatiere.appendChild(element);
+    });
+});
+
+function afficherNotes(conteneur, notes) {
+    conteneur.replaceChildren();
+    if (!Array.isArray(notes) || notes.length === 0) {
+        const message = document.createElement("p");
+        message.textContent = "Aucune note enregistrée.";
+        conteneur.appendChild(message);
+        return;
+    }
+
+    notes.forEach((note) => {
+        const element = document.createElement("div");
+        element.className = "boxNote styleNote";
+        element.dataset.id = note.id_note;
+        element.textContent =
+            `${note.libelle_mat} - ${note.date_note} - ${note.note}/20`;
+        conteneur.appendChild(element);
+    });
+}
+
+function chargerInfoProf(id, elementClique) {
+    if (
+        !cardInfo || !messageVide || !infoNom || !infoPrenom || !infoTel ||
+        !infoMatiere || !infoDispo || !notesProfesseur || !notesProfesseur2emep
+    ) {
+        return;
+    }
+
+    requeteProfesseur?.abort();
+    messageVide.textContent = "Chargement des informations du professeur…";
+    messageVide.style.display = "block";
+    const xhr = new XMLHttpRequest();
+    requeteProfesseur = xhr;
+    xhr.open("GET", `get_profs.php?id=${encodeURIComponent(id)}`, true);
+    xhr.responseType = "json";
+
+    xhr.onload = () => {
+        if (requeteProfesseur !== xhr) {
+            return;
+        }
+
+        const reponse = xhr.response;
+        if (xhr.status !== 200 || !reponse || reponse.erreur) {
+            messageVide.textContent = reponse?.erreur ||
+                `Impossible de charger le professeur (erreur ${xhr.status}).`;
+            return;
+        }
+
+        infoNom.textContent = reponse.nom || "";
+        infoPrenom.textContent = reponse.prenom || "";
+        infoTel.textContent = reponse.tel || "";
+        infoMatiere.textContent = reponse.matiere_libelle || "Aucune matière associée";
+        infoDispo.textContent = reponse.jcours || "";
+
+        afficherNotes(notesProfesseur, reponse.notes);
+        afficherNotes(notesProfesseur2emep, reponse.notesP2);
+        moyennesProfesseur = Array.isArray(reponse.moyennes) ? reponse.moyennes : [];
+        if (moyenneMatiere) {
+            moyenneMatiere.replaceChildren();
+            if (moyennesProfesseur.length === 0) {
+                const message = document.createElement("p");
+                message.textContent = "Aucune moyenne calculée.";
+                moyenneMatiere.appendChild(message);
+            } else {
+                const aide = document.createElement("p");
+                aide.textContent = "Cliquez sur « calculer » pour afficher les moyennes.";
+                moyenneMatiere.appendChild(aide);
+            }
+        }
+
+        messageVide.style.display = "none";
+        document.querySelectorAll(".item-prof").forEach((element) => {
+            element.classList.toggle("actif", element === elementClique);
+        });
+    };
+
+    xhr.onerror = () => {
+        if (requeteProfesseur === xhr) {
+            messageVide.textContent = "Erreur réseau lors du chargement du professeur.";
+        }
+    };
+    xhr.onabort = () => {};
+    xhr.send();
 }

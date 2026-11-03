@@ -1,75 +1,47 @@
-<?php 
-session_start();
- //require "gestion_note\db_connexion.php";
- try{
-    $PDO = new PDO("mysql:host=localhost;dbname=lesnotes;charset=utf8","root","");
-    //permet a PDO de lancer des exception en cas d'erreur sql
-   $PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}catch(PDOException  $e){
-  die("erreur".$e->getMessage());
-}
-if($_SERVER['REQUEST_METHOD']=="POST"){
-    $nom = htmlspecialchars($_POST['nom']);
-    $prenom = htmlspecialchars($_POST['prenom']);
-    $gmail = htmlspecialchars($_POST['gmail']);
-    $mdp =$_POST['mdp'];
-    $ConFmdp =$_POST['ConFmdp'];
+<?php
+require_once __DIR__ . '/../db_connexion.php';
+require_once __DIR__ . '/../session_config.php';
 
-    
-    if(!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['gmail']) && !empty($_POST['mdp']) && !empty($_POST['ConFmdp'])){
-        
-        if($mdp !== $ConFmdp){
-            echo "les deux mots de passe ne sont pas identiques";
-        }else{
-            
-        $userRecup = $PDO->prepare("SELECT * FROM utilisateur WHERE nom=? AND prenom=? AND gmail=? AND mdp=?");
-        $userRecup->execute(array($nom,$prenom,$gmail,$mdp));
-        //$verify =$userRecup->fetch();
-        
-        if($userRecup->rowCount()>0){
-            echo "cet email existe deja";           
-        }else{
-            //session_regenerate_id(true);
-            $mdp_hash =password_hash($mdp,PASSWORD_DEFAULT);
-            $query ="INSERT INTO utilisateur(nom,prenom,gmail,mdp) VALUES(:nom,:prenom,:gmail,:mdp)";
-            $insertion = $PDO->prepare($query);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nom = trim($_POST['nom'] ?? '');
+    $prenom = trim($_POST['prenom'] ?? '');
+    $gmail = trim($_POST['gmail'] ?? '');
+    $mdp = $_POST['mdp'] ?? '';
+    $confirmation = $_POST['ConFmdp'] ?? '';
+
+    if ($nom === '' || $prenom === '' || $gmail === '' || $mdp === '' || $confirmation === '') {
+        echo "Veuillez renseigner tous les champs.";
+    } elseif ($mdp !== $confirmation) {
+        echo "Les deux mots de passe ne sont pas identiques.";
+    } else {
+        $userRecup = $PDO->prepare("SELECT id_user FROM utilisateur WHERE gmail = ?");
+        $userRecup->execute([$gmail]);
+
+        if ($userRecup->fetchColumn() !== false) {
+            echo "Cette adresse e-mail est déjà utilisée.";
+        } else { 
+            $mdp_hash = password_hash($mdp, PASSWORD_DEFAULT);
+            $insertion = $PDO->prepare(
+                "INSERT INTO utilisateur (nom, prenom, gmail, mdp) VALUES (:nom, :prenom, :gmail, :mdp)"
+            );
             $insertion->execute([
-            
-            'nom'=>$nom,
-            'prenom'=>$prenom,
-            'gmail'=>$gmail,
-            'mdp'=>$mdp_hash,  
-                ]);
-            $id = $PDO->lastInsertId();// recuper directement ID auto incremente qui vien d'etre genere par mysql
-            $_SESSION['nom']=$nom;
-            $_SESSION['prenom']=$prenom;
-            $_SESSION['gmail']=$gmail;
-            $_SESSION['id']=$id;
-            $_SESSION['connecte']=true;
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'gmail' => $gmail,
+                'mdp' => $mdp_hash,
+            ]);
 
-//reinitialisation de session
-           $_SESSION=[];
-            if(ini_get("session.use_cookies")){
-                $params = session_get_cookie_params();
-                setcookie(
-                    session_name(),'',time() -42000,
-                    $params["path"], $params["domain"],
-                    $params["secure"], $params["httponly"]
-                );
-            }
-            session_destroy();
-            session_start();
             session_regenerate_id(true);
-            
-             header("Location: design-connexion.php");
+            $_SESSION['nom'] = $nom;
+            $_SESSION['prenom'] = $prenom;
+            $_SESSION['gmail'] = $gmail;
+            $_SESSION['id_user'] = $PDO->lastInsertId();
+            $_SESSION['connecte'] = true;
+
+            header('Location: ../index.php');
             exit();
         }
-        }
-
-    }else{
-        echo "veuillez renseigner tous les champs";
     }
-
 }
 ?>
 <!DOCTYPE html>
@@ -207,6 +179,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
             <form id="inscription" name="inscription" action="#" method="post">
                 
                 <h1 class="titre-conxion" >Bienvenue</h1>
+                
                 <div class="box-nom">
                      <input type="text" name="nom" placeholder="Nom "><i class="fa-solid fa-user"></i>
                 </div>

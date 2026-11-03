@@ -14,9 +14,17 @@ listes.forEach((liste) => {
     });
 });
 
+document.querySelectorAll('[data-dashboard-tab]').forEach((bouton) => {
+    bouton.addEventListener('click', () => {
+        const onglet = document.querySelector(`.list-side li[data-anim="${CSS.escape(bouton.dataset.dashboardTab)}"]`);
+        onglet?.click();
+    });
+});
+
 const boutonsAjout = document.querySelectorAll('.navBtn-Ajout[data-form]');
 const fondFormulaires = document.querySelector('.all_form');
 const formulaires = document.querySelectorAll('.all_form [data-form]');
+let declencheurFormulaire = null;
 
 function fermerFormulaires() {
     if (!fondFormulaires) {
@@ -24,15 +32,21 @@ function fermerFormulaires() {
     }
 
     fondFormulaires.classList.remove('is-open');
+    fondFormulaires.setAttribute('aria-hidden', 'true');
     formulaires.forEach((formulaire) => {
         formulaire.classList.remove('is-visible');
+        formulaire.setAttribute('aria-hidden', 'true');
     });
     boutonsAjout.forEach((bouton) => {
         bouton.classList.remove('active');
+        bouton.setAttribute('aria-expanded', 'false');
     });
+    document.body.style.overflow = '';
+    declencheurFormulaire?.focus();
+    declencheurFormulaire = null;
 }
 
-function ouvrirFormulaire(id) {
+function ouvrirFormulaire(id, declencheur) {
     if (!fondFormulaires) {
         return;
     }
@@ -43,18 +57,27 @@ function ouvrirFormulaire(id) {
         return;
     }
 
+    declencheurFormulaire = declencheur;
     formulaires.forEach((element) => {
         element.classList.toggle('is-visible', element === formulaire);
+        element.setAttribute('aria-hidden', String(element !== formulaire));
     });
     boutonsAjout.forEach((element) => {
-        element.classList.toggle('active', element === bouton);
+        const estActif = element === bouton;
+        element.classList.toggle('active', estActif);
+        element.setAttribute('aria-expanded', String(estActif));
     });
     fondFormulaires.classList.add('is-open');
+    fondFormulaires.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    formulaire.querySelector('input, select, textarea, button')?.focus();
 }
 
 boutonsAjout.forEach((bouton) => {
+    bouton.setAttribute('aria-haspopup', 'dialog');
+    bouton.setAttribute('aria-expanded', 'false');
     bouton.addEventListener('click', () => {
-        ouvrirFormulaire(bouton.dataset.form);
+        ouvrirFormulaire(bouton.dataset.form, bouton);
     });
 });
 
@@ -74,14 +97,36 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+formulaires.forEach((formulaire) => {
+    formulaire.addEventListener('keydown', (event) => {
+        if (event.key !== 'Tab' || !formulaire.classList.contains('is-visible')) {
+            return;
+        }
+
+        const focusables = Array.from(
+            formulaire.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')
+        );
+        const premier = focusables[0];
+        const dernier = focusables[focusables.length - 1];
+
+        if (event.shiftKey && document.activeElement === premier) {
+            event.preventDefault();
+            dernier?.focus();
+        } else if (!event.shiftKey && document.activeElement === dernier) {
+            event.preventDefault();
+            premier?.focus();
+        }
+    });
+});
+
 // Onglets des périodes.
-const btnPeriode = document.querySelectorAll('.sem[data-periode]');
-const contenuPeriode = document.querySelectorAll('.Cont_periode[data-periode]');
+const btnPeriode = document.querySelectorAll('.btn_sem');
+const contenuPeriode = document.querySelectorAll('.conteneur_sem');
 
 btnPeriode.forEach((periode) => {
     periode.addEventListener('click', () => {
-        const index = periode.dataset.periode;
-
+        const index = ongletperiode.dataset.ongletperiode;
+        
         btnPeriode.forEach((element) => {
             element.classList.toggle('active_periode', element === periode);
         });

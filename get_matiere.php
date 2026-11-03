@@ -1,23 +1,39 @@
-<?php 
-require "db_connexion.php";
-header("content-Type: application/json; charset=utf-8"); // elle indique la reponse est au forma json  et assure le bon affichage des caracter
-$id = $_GET['id']?? null;// elle recupere l'id envoye pa javascript
-if (!$id || !ctype_digit($id)) { //  !$id est vrai et $id est null et !ctype_digit($id) verifie bien que id contien uniquement des chiffres
+<?php
+require_once "db_connexion.php";
+require_once "session_config.php";
+
+header("Content-Type: application/json; charset=utf-8");
+
+if (
+    empty($_SESSION['connecte']) ||
+    $_SESSION['connecte'] !== true ||
+    empty($_SESSION['id_user'])
+) {
+    http_response_code(401);
+    echo json_encode(["erreur" => "Connexion requise."]);
+    exit;
+}
+
+$id = $_GET['id'] ?? null;
+if (!is_string($id) || !ctype_digit($id)) {
     http_response_code(400);
     echo json_encode(["erreur" => "Identifiant invalide."]);
     exit;
 }
 
-// Requête préparée pour éviter les injections SQL
-$stmMati = $PDO->prepare("SELECT id_matiere, libelle_mat, coefficient,heure FROM matieres WHERE id_matiere = ?");
-$stmMati->execute([$id]);
-$LesMatiere = $stmMati->fetch(PDO::FETCH_ASSOC);
+$idUser = (int) $_SESSION['id_user'];
+$stmMati = $PDO->prepare(
+    'SELECT id_matiere, libelle_mat, coefficient, heure
+     FROM matieres
+     WHERE id_matiere = ? AND id_user = ?'
+);
+$stmMati->execute([$id, $idUser]);
+$matiere = $stmMati->fetch(PDO::FETCH_ASSOC);
 
-if(!$LesMatiere){
+if (!$matiere) {
     http_response_code(404);
-    echo json_encode(["erreur"=>"matiere introuvable."]);
+    echo json_encode(["erreur" => "Matière introuvable."]);
     exit;
 }
-echo json_encode($LesMatiere);
-?>
 
+echo json_encode($matiere);

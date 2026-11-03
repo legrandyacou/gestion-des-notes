@@ -1,44 +1,75 @@
 <?php
-                    session_start();    
-                    if(!isset($_SESSION['connecte']) || $_SESSION['connecte'] !==true){
+require_once "db_connexion.php";
+require_once "session_config.php"; 
+
+                    if(
+                        !isset($_SESSION['connecte']) ||
+                        $_SESSION['connecte'] !== true ||
+                        empty($_SESSION['id_user'])
+                    ){
                         header('Location: formulaire/design-connexion.php');
-                        exit();
+                        exit;
                     }              
-                        require_once "db_connexion.php";
-                       $sql = "SELECT COUNT(*) FROM note ";
-                  $query = $PDO->query($sql);
-                  $noteTotal = $query->fetchColumn();
+                       
+                    //recuperation de la variable de session id user//
+                    $id_user = $_SESSION['id_user'];
+
+                    
+                       
+                       $sql = $PDO->prepare("SELECT COUNT(*) FROM note WHERE id_user = ?");
+                       $sql->execute([$id_user]);
+                       $noteTotal =$sql->fetchColumn();
+
+                    
                   //comptage 
-                   $sql = "SELECT COUNT(*) FROM professeurs ";
-                  $query = $PDO->query($sql);
-                  $profTotal = $query->fetchColumn();
+                  $sql = $PDO->prepare("SELECT COUNT(*) FROM professeurs WHERE id_user = ?");
+                  $sql->execute([$id_user]);
+                  $profTotal  = $sql->fetchColumn();
+                   
                    //comptage 
-                   $sql = "SELECT COUNT(*) FROM matieres ";
-                  $query = $PDO->query($sql);
-                  $matiTotal = $query->fetchColumn();
+                   $sql =$PDO->prepare("SELECT COUNT(*) FROM matieres WHERE id_user = ?");
+                   $sql->execute([$id_user]);
+                   $matiTotal =$sql->fetchColumn();
+                   
                //professeur                                           
-           $smt = $PDO->query("SELECT id_prof,nom,prenom,tel,jcours,id_matiere FROM professeurs");
+           $smt = $PDO->prepare("SELECT id_prof,nom,prenom,tel,jcours FROM professeurs WHERE id_user = ?");
+           $smt->execute([$id_user]);
           $professeur = $smt->fetchAll(PDO::FETCH_ASSOC);
           //matiere
-          $stmMati = $PDO->query("SELECT id_matiere,libelle_mat,coefficient,heure,id_prof FROM matieres");
+          $stmMati = $PDO->prepare("SELECT id_matiere,libelle_mat,coefficient,heure,id_prof FROM matieres WHERE id_user =?");
+          $stmMati->execute([$id_user]);
           $LesMatiere = $stmMati->fetchAll(PDO::FETCH_ASSOC);
           //NOTES
-          $stmNotes = $PDO->query("SELECT id_note,libelle_mat,date_note,note,id_prof,id_matiere FROM note ORDER BY date_note DESC, id_note DESC LIMIT 5");
+          $stmNotes = $PDO->prepare(
+           "SELECT id_note,libelle_mat,date_note,note,id_prof,id_matiere 
+           FROM note 
+           WHERE id_user = ? 
+           ORDER BY date_note DESC, id_note DESC
+            LIMIT 5"
+            );
+          $stmNotes->execute([$id_user]);
           $LesNote = $stmNotes->fetchAll(PDO::FETCH_ASSOC);
+
+
           $moyennesPeriodes = [1 => null, 2 => null, 3 => null];
-          $stmMoyennes = $PDO->query(
+          $stmMoyennes = $PDO->prepare(
               "SELECT notes_par_matiere.id_periodeNote,
                       SUM(notes_par_matiere.moyenne * matieres.coefficient)
                           / NULLIF(SUM(matieres.coefficient), 0) AS moyenne
-               FROM (
+               FROM (   
+
                    SELECT id_periodeNote, id_matiere, AVG(note) AS moyenne
                    FROM note
-                   WHERE id_periodeNote IN (1, 2, 3)
+                   WHERE id_user = :id_user AND id_periodeNote IN (1, 2, 3)
                    GROUP BY id_periodeNote, id_matiere
                ) AS notes_par_matiere
-               INNER JOIN matieres ON matieres.id_matiere = notes_par_matiere.id_matiere
+               INNER JOIN matieres ON matieres.id_matiere = notes_par_matiere.id_matiere AND matieres.id_user = :id_user2
                GROUP BY notes_par_matiere.id_periodeNote"
           );
+          $stmMoyennes->execute([
+                    ':id_user'=>$id_user,
+                    ':id_user2'=>$id_user
+            ]);
           foreach ($stmMoyennes->fetchAll(PDO::FETCH_ASSOC) as $moyennePeriode) {
               if ($moyennePeriode['moyenne'] !== null) {
                   $moyennesPeriodes[(int) $moyennePeriode['id_periodeNote']] = (float) $moyennePeriode['moyenne'];
@@ -321,7 +352,8 @@
                                                             <input id="note-valeur" type="number" name="note" step="0.5" min="0" max="20" placeholder="Ex. 15,5" required aria-describedby="note-hint">
                                                             <small id="note-hint">Valeur comprise entre 0 et 20.</small>
                                                         </div>
-                                                        <button type="submit" class="btn-subm" name="Enregistre"><i class="fa-solid fa-check"></i> Enregistrer la note</button>
+                                                        <input type="submit" class="btn-subm" value=" Enregistrer la note">
+                                                       <!-- <button type="submit" class="btn-subm" name="Enregistre"><i class="fa-solid fa-check"></i></button>-->
                                                     </form>
                                                 
                                         </div>   
@@ -362,7 +394,8 @@
                                                                 <?php endforeach; ?>
                                                             </select>
                                                         </div>
-                                                        <button type="submit" class="btn-subm" name="Enregistre"><i class="fa-solid fa-check"></i> Enregistrer la matière</button>
+                                                        <input type="submit"  class="btn-subm" value="Enregistrer la matière">
+                                                       <!-- <button type="submit" class="btn-subm" name="Enregistre"><i class="fa-solid fa-check"></i> </button>-->
                                                     </form>                    
                                         </div>   
 
@@ -374,12 +407,14 @@
                                             <h1 id="form-prof-title">Ajouter un professeur</h1>
                                             <p class="form-description">Ajoutez les coordonnées et la matière enseignée.</p>
                                         </div>
-                                        <button type="button" class="btn-close" aria-label="Fermer le formulaire">&times;</button>
+                                        <button type="" class="btn-close" aria-label="Fermer le formulaire">&times;</button>
                                     </div>
                                         <div class="formulaire">
                                                     <form action="insertion_proffesseurs.php" method="post" class="forMuLaire" name="forMu_pro" >
+                                                        
                                                         <div class="form-field">
                                                             <label for="prof-nom">Nom </label>
+                                                            <input type="hidden" name="action" value="Enregistrer le professeur">
                                                             <input id="prof-nom" type="text" placeholder="Nom de famille" name="nom" autocomplete="family-name" required>
                                                         </div>
                                                         <div class="form-field">
@@ -394,19 +429,9 @@
                                                             <label for="prof-jours">Jours de cours </label>
                                                             <input id="prof-jours" type="text" placeholder="Ex. Lundi et jeudi" name="jcours" required>
                                                         </div>
-                                                        <div class="form-field">
-                                                            <label for="prof-matiere">Matière enseignée </label>
-                                                            <select id="prof-matiere" name="id_matiere" required>
-                                                                <option value="">Choisir une matière</option>
-                                                                <?php foreach($LesMatiere as $mati): ?>
-                                                                    <option value="<?= htmlspecialchars($mati['id_matiere']) ?>">
-                                                                        <?= htmlspecialchars($mati['libelle_mat']) ?>
-                                                                    </option>
-                                                                <?php endforeach;?>
-                                                            </select>
-                                                        </div>
-                                                        
-                                                        <button type="submit" class="btn-subm" name="Enregistre"><i class="fa-solid fa-check"></i> Enregistrer le professeur</button>
+                                                    
+                                                        <input type="submit" class="btn-subm" value="Enregistrer le professeur">
+                                                        <!--<button type="submit" class="btn-subm" name="Enregistre"><i class="fa-solid fa-check"></i>Enregistrer le professeur</button>-->
                                                     </form>
                                                 
                                         </div>   
@@ -416,54 +441,67 @@
                                  
                                 
 </section>
-<section class="contenu contenu_profile " data-anim="6">
-    
-     <div class="h-[70vh] w-[50%] rounded-[10px] p-[10px] text-white shadow-md bg-[#17233b]">
-            <div class="cteneurPhoto_nom ">
-                <div>
-                    <div class="imgProfile"></div>
-                </div>
-                    <div>
-                        <button class="photo_Ajout">Ajouter une photo</button>
-                    
-                    <h3 class="nom_u"><?php echo htmlspecialchars($_SESSION['nom'] ?? '')." ".htmlspecialchars($_SESSION['prenom'] ?? '')?></h3>
-                    
-                    </div>
-                    
-            </div>
-            <div class="infoPerso">
-                    <h2>Information Personnel</h2>
-                    <div class="info_Personnel">
-                        <div>
-                            <h3>Date de naissance</h3>
-                            <span></span>
-                        </div>
-                        <div>
-                            <h3>Gmail</h3>
-                            <span><?php echo htmlspecialchars( $_SESSION['gmail']??'')?></span>
-                        </div>
-                        <div>
-                            <h3>Telephone</h3>
-                            <span>05 96 04 86 85</span>
-                        </div>
-                        
-                    </div>
-            </div>
-            <div class="infoScolaire">
-                    <h2>Information scolaire</h2>
-                    <div class="info_Scolaire">
-                        <div>
-                            <h3>Matricule</h3>
-                            <span>16 047 151 H</span>
-                        </div>
-                        <div><h3>Filiere</h3> <span></span></div>
-                        <div><h3>Classe</h3> <span></span></div>
-                    </div>
+<section class="contenu contenu_profile  " data-anim="6">
+    <div class="conteurProfile flex w-screen h-screen ">
+        <div class="sideProfile h-screen w-[20rem] bg-white p-[10px] rounded-md">
+            <div class="boxImg w-[40px] h-[100px] w-[100%] border-1 flex justify-center">
+                <img src="images/0fd04384b14eb60ee8c69e5cfb8c6409.jpg" alt="image" class="w-[100px] h-[100px]" >
+                <h3>Bakayoko yacouba</h3>
             </div>
         </div>
+        <div class="infosProfile bg-white rounded-md p-[20px] m-[10px] w-full">
+                <h2>Information personnel</h2>   
+                <div class="nomPrenom flex justify-between mb-[20px] border-1" >
+                    <div>
+                         <label for="Nom">Nom</label> <br>
+                    <input type="text" class=" rounded-md bg-black w-[25rem] p-[10px]">
+                    </div>
+                   <div>
+                    <label for="PreNom">preNom</label> <br>
+                    <input type="text" class=" rounded-md bg-black w-[25rem] p-[10px]">
+                   </div>
+                    
+                </div>   
+                <div class="email mb-[20px]">
+                    <label for="email">Email</label> <br>
+                    <input type="text" class=" rounded-md bg-black w-[100%] p-[10px]">
+                </div>         
+                         
+                <div class="TelDate flex justify-between mb-[20px] border-1">
+                    <div>
+                         <label for="Telephone">Telephone</label> <br>
+                         <input type="tel" class=" rounded-md bg-black w-[25rem] p-[10px]">
+                    </div>
+                   <div>
+                    <label for="DateNaiss">Date de naissance</label> <br>
+                    <input type="date" class=" rounded-md bg-black w-[25rem] p-[10px]">
+                   </div>
+                    
+                </div> 
+                <div class="ClassMatr flex justify-between mb-[20px] border-1">
+                    
+                    <div>
+                        <label for="classe">Classe</label> <br>
+                    <input type="text" class=" rounded-md bg-black w-[25rem] p-[5px]">
+                    </div>
+                    <div>
+                        <label for="Matricule">Matricule</label> <br>
+                    <input type="text" class=" rounded-md bg-black w-[25rem] p-[5px]">
+                    </div>
+                    
+                </div> 
+                <div class="submiteProfile  flex gap-[10px] mb-[20px] border-1 justify-between">
+                    <input type="reset" value="Annuler la modification" class=" rounded-md p-[5px] shadow-md bg-black text-white w-[25rem]">
+                    
+                    <input type="button" value="Modifier" class=" rounded-md p-[5px] shadow-md bg-black text-white w-[25rem]">
+                </div> 
+        </div>
+    </div>
+    
+
         
 </section> 
-<!-- page des matiere--> 
+<!-- section des matiere--> 
    <section class="contenu contenu3 flex justify-end " data-anim="3">
     
         <div class="liste_matiere">
@@ -533,15 +571,31 @@
             <?php if(empty($professeur)): ?>
                 <p>Aucun professeur enregistré</p>
             <?php else: ?>
+                <ul>
                 <?php foreach($professeur as $prof): ?>
                     <!--item-prof-->
-                    <div class="item-prof  text-white mb-[5px] flex " data-id="<?= htmlspecialchars($prof['id_prof']) ?>">
-                        <a href="filtre.php?id_prof=<?= htmlspecialchars($prof['id_prof']) ?>" onclick="return confirm('voulez vous vraiment modifier ce professeur ?');"> <button type="button" class="delete modifie"><i class="fa-solid fa-recycle"></i></button></a>
-                                    <a href="suppProf.php?del=<?= htmlspecialchars($prof['id_prof']) ?>" onclick="return confirm('voulez vous vraiment supprimer ce professeur ?');"> <button type="button" class="delete"><i class="fa-regular fa-trash-can"></i></button></a>
-                                
-                        <?= htmlspecialchars($prof['nom']) . " " . htmlspecialchars($prof['prenom']) ?>
-                    </div>    
+                    <li class="item-prof  text-white mb-[5px] flex " data-id="<?= htmlspecialchars($prof['id_prof']) ?>">
+                       
+                                <span>
+                                     <?= htmlspecialchars(
+                                        $prof['nom'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                        ) . " " . htmlspecialchars(
+                                            $prof['prenom'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                            ) ?>
+                                </span>
+                       
+                        <form action="insertion_proffesseurs.php" method="post">
+                            <input type="hidden" name="action" value="supprimer">
+                            <input type="hidden" name="id_prof" value="<?= $prof['id_prof'] ?>">
+                            <button type="submit" class="delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </form>
+                    </li>    
                 <?php endforeach; ?>
+                </ul>
             <?php endif; ?> 
         </div>
        <!--Global cardInfo-->
@@ -550,8 +604,8 @@
             <div class="w-[52%]  ">
                 
                     <div class=" mb-[10px] " id="info_prof">
-                        <div class=" rounded-md bg-white p-4  shadow-lg">
-                            <h1 id="infoNom"><strong>Nom</strong></h1>
+                        <div class=" rounded-md bg-white p-4 shadow-lg">
+                            <h1 id="infoNom"><strong>Nom:</strong></h1>
                             <strong>prenom: </strong><span id="infoPreNom"></span> <br>
 
                             <strong>Numéro de téléphone: </strong><span id="infoTel"></span><br>
@@ -568,7 +622,7 @@
                     <button class="ongletSem w-[50%] bg-[#17233b] text-white rounded-md"  data-ongsem="2">Semestre 2</button>
                 </div>
                     <div class="relative border-8 h-[66vh]">
-                        <div class="boxSem is-active_conteneur h-[60vh] w-[100%] p-[5px] py-4 pacity-[0] absolute "  data-ongsem="1" >
+                        <div class="boxSem is-active_conteneur h-[60vh] w-[100%] p-[5px] py-4 opacity-[0] absolute "  data-ongsem="1" >
                             <h1 hidden>Semestre 1</h1>
                             <button id="btnCalculMoy1"  type="button">calcule</button>
                             <div id="notesProfesseur">
@@ -578,7 +632,9 @@
                         </div>
                         <div class="boxSem h-[60vh] w-[100%] p-[5px] py-4 absolute opacity-[0]" data-ongsem="2">
                             <h1 hidden >Semestre 2</h1>
-                            <button type="button">calcule</button>
+                           <div id="notesProfesseur_2emep">
+                                <p>Aucune note enregistré.</p>
+                            </div>
                         </div>
                     </div>
                        
@@ -607,7 +663,7 @@
    <script src="fonction_js/ongles.js"></script>
    <script src="fonction_js/chargerInfo_prof.js"></script>
    <script src="fonction_js/chargerInfo_matier.js"></script>
-   <script src="fonction_js/btn-submite.js"></script>
+   <!--<script src="fonction_js/btn-submite.js"></script>-->
    <script src="fonction_js/ongletPeriode.js"></script>
    
                             

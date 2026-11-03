@@ -1,5 +1,5 @@
 <?php 
-                                            $countNote=0;
+
                                             try {      //etape 1
                                             $PDO  = new PDO("mysql:host=localhost;dbname=lesnotes;charset=utf8","root","");
                                             } catch (Exception $e){

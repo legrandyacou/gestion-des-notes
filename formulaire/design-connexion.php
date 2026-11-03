@@ -1,40 +1,37 @@
-<?php 
-session_start();
-    try {
-       $connexion = new PDO("mysql:host=localhost;dbname=lesnotes;charset=utf8","root","");
+<?php
+require_once __DIR__ . '/../db_connexion.php';
+require_once __DIR__ . '/../session_config.php';
 
-    } catch (PDOException $e) {
-        die("erreur".$e->getmessage());
-    }
-    if($_SERVER['REQUEST_METHOD']=="POST"){
-        if(!empty($_POST['gmail']) && !empty($_POST['mdp'])){
-            $gmail =htmlspecialchars($_POST['gmail']);
-            $mdp_saisi =$_POST['mdp'];
-           
-            $recuperuser = $connexion->prepare("SELECT * FROM utilisateur WHERE gmail=?");
-            $recuperuser->execute(array($gmail));
-            $utilisateur= $recuperuser->fetch();
-            if($utilisateur && password_verify($mdp_saisi,$utilisateur['mdp'])){
-                session_regenerate_id(true);
-                $_SESSION['gmail']=$gmail;
-                $_SESSION['nom']=$utilisateur['nom'];
-                $_SESSION['prenom']=$utilisateur['prenom'];
-                $_SESSION['connecte']=true;
-                $_SESSION['id']=$utilisateur['id'];
-                 header("Location: ../index.php");
-                 exit();   
-            }else{
-                echo "mot de passe ou pseudo incorrect";
-            }
-             
-           
-                           
-               
-           
+
+$erreur ="";
+if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+    $gmail = trim($_POST['gmail']?? '');
+    $mdp_saisi = $_POST['mdp']?? '';
+ 
+    if ($gmail !== '' && $mdp_saisi !== '') {
+        $recuperuser = $PDO->prepare("SELECT id_user, nom, prenom, gmail, mdp FROM utilisateur WHERE gmail = ?");
+        $recuperuser->execute([$gmail]);
+        $utilisateur = $recuperuser->fetch(PDO::FETCH_ASSOC);
+
+        if ($utilisateur && password_verify($mdp_saisi, $utilisateur['mdp'])) {
+            session_regenerate_id(true);
+            $_SESSION['gmail'] = $utilisateur['gmail'];
+            $_SESSION['nom'] = $utilisateur['nom'];
+            $_SESSION['prenom'] = $utilisateur['prenom'];
+            $_SESSION['id_user'] = $utilisateur['id_user'];
+            $_SESSION['connecte'] = true;
+
+            header('Location: ../index.php');
+            exit;
         }else{
-            echo "veuillez renseigner tous les champs";
+            $erreur ="mot de passe ou gmail incorrecte !";
         }
+
+        
+    } else {
+        echo "Veuillez renseigner tous les champs.";
     }
+}
 ?>
 
 <!DOCTYPE html>
@@ -184,7 +181,9 @@ session_start();
             </div>
                 <p id="message"></p>
                 <p id="succes"></p>
-           
-           
+            <script>
+                
+                    
+            </script>
 </body>
 </html>
