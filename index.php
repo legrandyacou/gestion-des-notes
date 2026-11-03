@@ -614,7 +614,8 @@ require_once "session_config.php";
                         </div>
                                     
                     </div>
-                                <!--Onglet des periodes-->
+                        <p id="messageVide" class="messageVide">Cliquez sur un professeur pour voir ses informations.</p>
+                                    <!--Onglet des periodes-->
                       <div class=" h-[75vh]  ">
             <div class="shadow-md rounded-md bg-white p-4 h-[75vh] ">
                 <div class="box_onglet  w-[100%] "><!--peiodes-->
@@ -628,7 +629,6 @@ require_once "session_config.php";
                             <div id="notesProfesseur">
                                 <p>Aucune note enregistré.</p>
                             </div>
-                            <p id="messageVide" class="messageVide">cliquez sur un professeur pour voir ses informations</p>
                         </div>
                         <div class="boxSem h-[60vh] w-[100%] p-[5px] py-4 absolute opacity-[0]" data-ongsem="2">
                             <h1 hidden >Semestre 2</h1>
