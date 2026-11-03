@@ -1,54 +1,62 @@
-const panelInfo = document.getElementById("info_matiere");
-const libelle = document.getElementById("infoLib");
-const coefficient = document.getElementById("infocoeff");
-const heure = document.getElementById("infoHeure");
-const telephone = document.getElementById("infoTel");
-const message = document.querySelector(".messagEvide");
-document.querySelectorAll(".item-matiere").forEach(item =>{
-    item.addEventListener("click",()=>{
-        const id = item.dataset.id;
-        chargerInfoMatiere(id ,item);
+const panelInfoMatiere = document.getElementById("info_matiere");
+const messageMatiere = document.getElementById("messagEvide");
+const libelleMatiere = document.getElementById("infoLib");
+const coefficientMatiere = document.getElementById("infocoeff");
+const heuresMatiere = document.getElementById("infoHeure");
+const professeurMatiere = document.getElementById("infoProfesseur");
+let requeteMatiere = null;
+
+document.querySelectorAll(".item-matiere").forEach((item) => {
+    item.addEventListener("click", () => {
+        chargerInfoMatiere(item.dataset.id, item);
     });
 });
 
-const premiereMatiere = document.querySelector(".item-matiere");
-if (premiereMatiere) {
-    chargerInfoMatiere(premiereMatiere.dataset.id, premiereMatiere);
-}
-
-function  chargerInfoMatiere(id ,elementClique){
-    if (!panelInfo || !message) {
+function chargerInfoMatiere(id, elementClique) {
+    if (
+        !panelInfoMatiere || !messageMatiere || !libelleMatiere ||
+        !coefficientMatiere || !heuresMatiere || !professeurMatiere
+    ) {
         return;
     }
-    message.textContent  = "chargement...";
-    message.style.display = "block";
-    panelInfo.classList.remove("visible");
-    
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-            const Matiere = this.response;
-            if(Matiere.erreur){
-                message.textContent = Matiere.erreur;
-                message.style.display = "block";
-                return;
-            }
-            libelle.textContent = Matiere.libelle_mat;
-            coefficient.textContent = Matiere.coefficient;
-            heure.textContent = Matiere.heure;
-            message.style.display = "none";
-            panelInfo.classList.add("visible");
-            document.querySelectorAll(".item-matiere").forEach(el =>{
-                el.classList.remove("actif");
-            });
-            elementClique.classList.add("actif");
 
-        }else if(this.readyState == 4 && this.status == 404){
-            message.textContent = "information introuvable";
-            message.style.display = "block";
-        }
-    }
-    xhr.open("GET","get_matiere.php?id="+encodeURIComponent(id),true);
+    requeteMatiere?.abort();
+    messageMatiere.textContent = "Chargement des informations de la matière…";
+    messageMatiere.style.display = "block";
+
+    const xhr = new XMLHttpRequest();
+    requeteMatiere = xhr;
+    xhr.open("GET", `get_matiere.php?id=${encodeURIComponent(id)}`, true);
     xhr.responseType = "json";
+
+    xhr.onload = () => {
+        if (requeteMatiere !== xhr) {
+            return;
+        }
+
+        const reponse = xhr.response;
+        if (xhr.status !== 200 || !reponse || reponse.erreur) {
+            messageMatiere.textContent = reponse?.erreur ||
+                `Impossible de charger la matière (erreur ${xhr.status}).`;
+            return;
+        }
+
+        libelleMatiere.textContent = reponse.libelle_mat || "";
+        coefficientMatiere.textContent = reponse.coefficient ?? "";
+        heuresMatiere.textContent = reponse.heure ?? "";
+        professeurMatiere.textContent = reponse.professeur || "Aucun professeur associé";
+
+        messageMatiere.style.display = "none";
+        document.querySelectorAll(".item-matiere").forEach((element) => {
+            element.classList.toggle("actif", element === elementClique);
+        });
+    };
+
+    xhr.onerror = () => {
+        if (requeteMatiere === xhr) {
+            messageMatiere.textContent = "Erreur réseau lors du chargement de la matière.";
+        }
+    };
+    xhr.onabort = () => {};
     xhr.send();
 }

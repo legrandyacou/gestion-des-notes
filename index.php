@@ -441,66 +441,92 @@ require_once "session_config.php";
                                  
                                 
 </section>
-<section class="contenu contenu_profile  " data-anim="6">
-    <div class="conteurProfile flex w-screen h-screen ">
-        <div class="sideProfile h-screen w-[20rem] bg-white p-[10px] rounded-md">
-            <div class="boxImg w-[40px] h-[100px] w-[100%] border-1 flex justify-center">
-                <img src="images/0fd04384b14eb60ee8c69e5cfb8c6409.jpg" alt="image" class="w-[100px] h-[100px]" >
-                <h3>Bakayoko yacouba</h3>
+<section class="contenu contenu_profile" data-anim="6">
+    <?php
+    $nomProfil = trim((string) ($_SESSION['nom'] ?? ''));
+    $prenomProfil = trim((string) ($_SESSION['prenom'] ?? ''));
+    $gmailProfil = trim((string) ($_SESSION['gmail'] ?? ''));
+    $nomCompletProfil = trim($prenomProfil . ' ' . $nomProfil);
+    $initialeProfil = strtoupper(substr($prenomProfil !== '' ? $prenomProfil : $nomProfil, 0, 1));
+    ?>
+    <div class="profile-page">
+        <header class="profile-header">
+            <div>
+                <p class="profile-eyebrow">ESPACE PERSONNEL</p>
+                <h1>Mon profil</h1>
+                <p>Consultez les informations de votre compte et votre activité.</p>
+            </div>
+            <button type="button" class="profile-back-button" data-dashboard-tab="1">
+                <i class="fa-solid fa-arrow-left"></i>
+                Retour au tableau de bord
+            </button>
+        </header>
+
+        <div class="profile-layout">
+            <aside class="profile-summary-card">
+                <div class="profile-avatar" aria-hidden="true">
+                    <?= htmlspecialchars($initialeProfil !== '' ? $initialeProfil : 'U', ENT_QUOTES, 'UTF-8') ?>
+                </div>
+                <p class="profile-account-label">Compte personnel</p>
+                <h2><?= htmlspecialchars($nomCompletProfil !== '' ? $nomCompletProfil : 'Utilisateur', ENT_QUOTES, 'UTF-8') ?></h2>
+                <p class="profile-email"><?= htmlspecialchars($gmailProfil !== '' ? $gmailProfil : 'Adresse e-mail non renseignée', ENT_QUOTES, 'UTF-8') ?></p>
+                <span class="profile-status"><span></span> Connecté</span>
+
+                <div class="profile-summary-divider"></div>
+                <p class="profile-summary-title">Mon espace scolaire</p>
+                <div class="profile-activity-list">
+                    <div><span>Notes enregistrées</span><strong><?= (int) $noteTotal ?></strong></div>
+                    <div><span>Matières suivies</span><strong><?= (int) $matiTotal ?></strong></div>
+                    <div><span>Professeurs</span><strong><?= (int) $profTotal ?></strong></div>
+                </div>
+            </aside>
+
+            <div class="profile-details">
+                <section class="profile-details-card" aria-labelledby="profile-details-title">
+                    <div class="profile-card-heading">
+                        <span class="profile-card-icon"><i class="fa-regular fa-id-card"></i></span>
+                        <div>
+                            <h2 id="profile-details-title">Informations personnelles</h2>
+                            <p>Les informations associées à votre compte.</p>
+                        </div>
+                    </div>
+
+                    <dl class="profile-fields">
+                        <div class="profile-field">
+                            <dt>Prénom</dt>
+                            <dd><?= htmlspecialchars($prenomProfil !== '' ? $prenomProfil : 'Non renseigné', ENT_QUOTES, 'UTF-8') ?></dd>
+                        </div>
+                        <div class="profile-field">
+                            <dt>Nom</dt>
+                            <dd><?= htmlspecialchars($nomProfil !== '' ? $nomProfil : 'Non renseigné', ENT_QUOTES, 'UTF-8') ?></dd>
+                        </div>
+                        <div class="profile-field profile-field-full">
+                            <dt>Adresse e-mail</dt>
+                            <dd><i class="fa-regular fa-envelope"></i><?= htmlspecialchars($gmailProfil !== '' ? $gmailProfil : 'Non renseignée', ENT_QUOTES, 'UTF-8') ?></dd>
+                        </div>
+                    </dl>
+
+                    <div class="profile-info-note">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <p>Le numéro de téléphone, la date de naissance et la classe ne sont pas encore enregistrés pour ce compte.</p>
+                    </div>
+                </section>
+
+                <section class="profile-security-card">
+                    <span class="profile-security-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                    <div>
+                        <h2>Votre compte est protégé</h2>
+                        <p>Vos informations scolaires sont accessibles uniquement depuis votre session.</p>
+                    </div>
+                    <a href="deconnection.php" class="profile-logout-button">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        Déconnexion
+                    </a>
+                </section>
             </div>
         </div>
-        <div class="infosProfile bg-white rounded-md p-[20px] m-[10px] w-full">
-                <h2>Information personnel</h2>   
-                <div class="nomPrenom flex justify-between mb-[20px] border-1" >
-                    <div>
-                         <label for="Nom">Nom</label> <br>
-                    <input type="text" class=" rounded-md bg-black w-[25rem] p-[10px]">
-                    </div>
-                   <div>
-                    <label for="PreNom">preNom</label> <br>
-                    <input type="text" class=" rounded-md bg-black w-[25rem] p-[10px]">
-                   </div>
-                    
-                </div>   
-                <div class="email mb-[20px]">
-                    <label for="email">Email</label> <br>
-                    <input type="text" class=" rounded-md bg-black w-[100%] p-[10px]">
-                </div>         
-                         
-                <div class="TelDate flex justify-between mb-[20px] border-1">
-                    <div>
-                         <label for="Telephone">Telephone</label> <br>
-                         <input type="tel" class=" rounded-md bg-black w-[25rem] p-[10px]">
-                    </div>
-                   <div>
-                    <label for="DateNaiss">Date de naissance</label> <br>
-                    <input type="date" class=" rounded-md bg-black w-[25rem] p-[10px]">
-                   </div>
-                    
-                </div> 
-                <div class="ClassMatr flex justify-between mb-[20px] border-1">
-                    
-                    <div>
-                        <label for="classe">Classe</label> <br>
-                    <input type="text" class=" rounded-md bg-black w-[25rem] p-[5px]">
-                    </div>
-                    <div>
-                        <label for="Matricule">Matricule</label> <br>
-                    <input type="text" class=" rounded-md bg-black w-[25rem] p-[5px]">
-                    </div>
-                    
-                </div> 
-                <div class="submiteProfile  flex gap-[10px] mb-[20px] border-1 justify-between">
-                    <input type="reset" value="Annuler la modification" class=" rounded-md p-[5px] shadow-md bg-black text-white w-[25rem]">
-                    
-                    <input type="button" value="Modifier" class=" rounded-md p-[5px] shadow-md bg-black text-white w-[25rem]">
-                </div> 
-        </div>
     </div>
-    
-
-        
-</section> 
+</section>
 <!-- section des matiere--> 
    <section class="contenu contenu3 flex justify-end " data-anim="3">
     
@@ -547,12 +573,12 @@ require_once "session_config.php";
                             <span class="dashboard-stat-icon"><i class="fa-solid fa-chalkboard-user"></i></span>
                             <div>
                                 <p>Professeur</p>
-                                <strong><span id="infoPrenom"></span></strong>
+                                <strong><span id="infoProfesseur"></span></strong>
                             </div>
                             <span class="dashboard-stat-mark"><i class="fa-solid fa-users"></i></span>
                         </article>
                 </div>
-             <p class="messagEvide" id="messagEvide">cliquez sur une matiere pour voir ses informations</p>
+             <p class="messagEvide" id="messagEvide">Cliquez sur une matière pour voir ses informations.</p>
          </div>
          
         

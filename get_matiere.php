@@ -23,9 +23,13 @@ if (!is_string($id) || !ctype_digit($id)) {
 
 $idUser = (int) $_SESSION['id_user'];
 $stmMati = $PDO->prepare(
-    'SELECT id_matiere, libelle_mat, coefficient, heure
+    'SELECT matieres.id_matiere, matieres.libelle_mat, matieres.coefficient, matieres.heure,
+            CONCAT_WS(" ", professeurs.prenom, professeurs.nom) AS professeur
      FROM matieres
-     WHERE id_matiere = ? AND id_user = ?'
+     LEFT JOIN professeurs
+       ON professeurs.id_prof = matieres.id_prof
+      AND professeurs.id_user = matieres.id_user
+     WHERE matieres.id_matiere = ? AND matieres.id_user = ?'
 );
 $stmMati->execute([$id, $idUser]);
 $matiere = $stmMati->fetch(PDO::FETCH_ASSOC);
