@@ -90,7 +90,8 @@ require_once "session_config.php";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de bord | Gestion des notes</title>
-    <link rel="shortcut icon" href="images/icons8-edit-property-96.png" type="image/x-icon">
+    
+    <link rel="shortcut icon" href="images/icons8-school-96.png" type="image/x-icon">
     <link rel="stylesheet" href="style-index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css">
 
@@ -99,6 +100,8 @@ require_once "session_config.php";
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 <!--ligne de tailwind css-->
  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+ 
+ <?php include "header.php"?>
   </head>
 <body>
    <div class="side-baar">
@@ -106,7 +109,7 @@ require_once "session_config.php";
         <div class="list-side">
             <a class="sidebar-brand" href="index.php">
                 <span class="sidebar-brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
-                <span class="sidebar-brand-name">Note<span>Flow</span><small>GESTION SCOLAIRE</small></span>
+                <span class="sidebar-brand-name">Mon<span>Pp</span><small>GESTION SCOLAIRE</small></span>
             </a>
            
             <ul>
