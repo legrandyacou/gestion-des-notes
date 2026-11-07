@@ -92,8 +92,10 @@ require_once "session_config.php";
     <title>Tableau de bord | Gestion des notes</title>
     
     <link rel="shortcut icon" href="images/icons8-school-96.png" type="image/x-icon">
-    <link rel="stylesheet" href="style-index.css">
+    <link rel="stylesheet" href="doc css/style-index.css">
+    <link rel="stylesheet" href="doc css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css">
+    
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
