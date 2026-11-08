@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             $_SESSION['id_user'] = $utilisateur['id_user'];
             $_SESSION['connecte'] = true;
 
-            header('Location: ../index.php');
+            header('Location: ../loading.php');
             exit;
         }else{
             $erreur ="mot de passe ou gmail incorrecte !";
@@ -44,9 +44,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     <link rel="shortcut icon" href="../images/icons8-school-96.png" type="image/x-icon">
     <link rel="stylesheet" href="../doc css/connexion.css">
     <link rel="stylesheet" href="../doc css/responsive.css">
+    <link rel="stylesheet" href="../doc css/chargement.css">
 
 </head>
 <body class="auth-page">
+    <div id="loader" class="loader" aria-live="polite" aria-label="Chargement">
+    <div class="loader-spinner"></div>
+    <p>Chargement…</p>
+     </div>
             <div class="parent">
                 <div class="enfant1">
                     <div class="design3"></div> 
@@ -80,6 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         </div>
             </div>
                 
-           
+           <script src="fonction_js/chargement.js"></script>
 </body>
 </html>

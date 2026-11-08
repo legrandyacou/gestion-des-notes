@@ -63,15 +63,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Modifier un professeur</title>
+     <link rel="stylesheet" href="doc css/modf_prof.css">
+    
 </head>
 <body>
+    
+     </div>
+     
     <form action="filtre.php?id_prof=<?= (int) $professeur['id_prof'] ?>" method="post">
-        <input type="text" name="nom" value="<?= htmlspecialchars($professeur['nom']) ?>" required>
-        <input type="text" name="prenom" value="<?= htmlspecialchars($professeur['prenom']) ?>" required>
-        <input type="tel" name="tel" value="<?= htmlspecialchars($professeur['tel']) ?>" required>
-        <input type="text" name="jcours" value="<?= htmlspecialchars($professeur['jcours']) ?>" required>
-        <button type="submit">Enregistrer</button>
+        <div>
+        <h1>Modification</h1>
+     </div>
+        <input type="text" name="nom" value="<?= htmlspecialchars($professeur['nom']) ?>" required> <br>
+        <input type="text" name="prenom" value="<?= htmlspecialchars($professeur['prenom']) ?>" required><br>
+        <input type="tel" name="tel" value="<?= htmlspecialchars($professeur['tel']) ?>" required> <br>
+        <input type="text" name="jcours" value="<?= htmlspecialchars($professeur['jcours']) ?>" required> <br>
+        <div class="box_sub">
+            <button type="submit">Enregistrer</button>
         <a href="index.php">Annuler</a>
+        </div>
+        
     </form>
+    <script src="fonction_js/chargement.js"></script>
 </body>
 </html>

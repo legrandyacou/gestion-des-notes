@@ -56,19 +56,12 @@ $professeur['moyennes'] = $stmtMoy->fetchAll(PDO::FETCH_ASSOC);
 $stmNotes = $PDO->prepare(
     'SELECT id_note, libelle_mat, date_note, note, id_prof
      FROM note
-     WHERE id_prof = ? AND id_user = ? AND id_periodeNote = 1
+     WHERE id_prof = ? AND id_user = ? AND id_periodeNote = ?
      ORDER BY date_note DESC, id_note DESC'
 );
-$stmNotes->execute([$id, $idUser]);
-$professeur['notes'] = $stmNotes->fetchAll(PDO::FETCH_ASSOC);
-
-$stmNotesPeriode2 = $PDO->prepare(
-    'SELECT id_note, libelle_mat, date_note, note, id_prof
-     FROM note
-     WHERE id_prof = ? AND id_user = ? AND id_periodeNote = 2
-     ORDER BY date_note DESC, id_note DESC'
-);
-$stmNotesPeriode2->execute([$id, $idUser]);
-$professeur['notesP2'] = $stmNotesPeriode2->fetchAll(PDO::FETCH_ASSOC);
+for ($periode = 1; $periode <= 3; $periode++) {
+    $stmNotes->execute([$id, $idUser, $periode]);
+    $professeur['notesP' . $periode] = $stmNotes->fetchAll(PDO::FETCH_ASSOC);
+}
 
 echo json_encode($professeur);

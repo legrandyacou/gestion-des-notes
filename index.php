@@ -94,6 +94,7 @@ require_once "session_config.php";
     <link rel="shortcut icon" href="images/icons8-school-96.png" type="image/x-icon">
     <link rel="stylesheet" href="doc css/style-index.css">
     <link rel="stylesheet" href="doc css/responsive.css">
+   
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css">
     
 
@@ -106,6 +107,7 @@ require_once "session_config.php";
  <?php include "header.php"?>
   </head>
 <body>
+    
    <div class="side-baar">
        
         <div class="list-side">
@@ -118,15 +120,22 @@ require_once "session_config.php";
                 <li id="active" class="active" data-anim="1"> <i class="fa-solid fa-house"></i> <span class="">Accueil</span> </li>
                 <li data-anim="2"> <i class="fa-solid fa-book"></i> <span >Ajouter</span> </li>
                 <li data-anim="3"> <i class="fa-solid fa-pen-ruler"></i> <span >Matières</span> </li>
-                <li data-anim="6">  <i class="fa-solid fa-circle-user"></i> <span >Profil</span> </li>
                 <li data-anim="4"><i class="fa-solid fa-chalkboard-user"></i> <span >Professeurs</span> </li>
+                <li data-anim="6">  <i class="fa-solid fa-circle-user"></i> <span >Profil</span> </li>
                 <?php if(isset($_SESSION['connecte']) && $_SESSION['connecte'] == true): ?>
-                    <h4 style="position: absolute;
-                    bottom: 70px;width: 130px; color:#fff;margin-bottom: 10px;
-                   "><?php echo htmlspecialchars($_SESSION['nom']?? '')?></h4>
-                    <li class="bottoM" data-anim="5"><a href="deconnection.php" ><i class="fa-solid fa-right-from-bracket"></i> <span >Déconnexion</span> </a></li>
+                    <button style="position: absolute;
+                        bottom: 70px;width: 130px;
+                         color:#fff;
+                         margin-bottom: 10px;
+                         
+                          display: flex;
+                        justify-content: center;
+                        align-items: center;">
+                        <?php echo htmlspecialchars($_SESSION['nom']?? '')?>
+                </button>
+                    <li class="bottoM" data-anim="5" hidden><a href="deconnection.php" ><i class="fa-solid fa-right-from-bracket"></i> <span >Déconnexion</span> </a></li>
                  <?php  else: ?>
-                        <li class="bottoM" data-anim="5"><a href="formulaire/design-connexion.php" target="_blank" id="lien_connexion" ><i class="fa-solid fa-right-to-bracket"></i> <span class="hidden">connexion</span> </a></li>   
+                        <li class="bottoM" data-anim="5" hidden><a href="formulaire/design-connexion.php" target="_blank" id="lien_connexion" ><i class="fa-solid fa-right-to-bracket"></i> <span class="hidden">connexion</span> </a></li>   
                  <?php endif;?>    
 
 
@@ -146,7 +155,7 @@ require_once "session_config.php";
                     <h1><?= htmlspecialchars($_SESSION['nom'] ?? 'Bienvenue', ENT_QUOTES, 'UTF-8') ?></h1>
                     <p class="dashboard-subtitle">Retrouvez en un coup d’œil le suivi de vos notes et de votre équipe pédagogique.</p>
                 </div>
-                <button type="button" class="dashboard-action navBtn-Ajout" data-form="1">
+                <button type="button" class="dashboard-action navBtn-Ajout" data-form="1" hidden>
                     <i class="fa-solid fa-plus"></i> Ajouter une note
                 </button>
             </div>
@@ -322,7 +331,7 @@ require_once "session_config.php";
                                                                 <?php foreach($LesMatiere as $mat): ?>
                                                                     <option value="<?= htmlspecialchars($mat['id_matiere'])?>">
                                                                         <?= htmlspecialchars($mat['libelle_mat'])?>
-                                                                    </option>
+                                                                    </option> 
                                                                 <?php endforeach; ?>
                                                             </select>
                                                         </div>
@@ -378,7 +387,7 @@ require_once "session_config.php";
                                                     <form action="insertion_matiere.php" method="post" class="forMuLaire" name="formu_mati" >
                                                         <div class="form-field">
                                                             <label for="matiere-libelle">Nom de la matière </label>
-                                                            <input id="matiere-libelle" type="text" placeholder="Ex. Mathématiques" name="libelle_mat" required>
+                                                            <input id="matiere-libelle" type="text" maxlength="30" placeholder="Ex. Mathématiques" name="libelle_mat" required>
                                                         </div>
                                                         <div class="form-field">
                                                             <label for="matiere-coefficient">Coefficient </label>
@@ -583,6 +592,7 @@ require_once "session_config.php";
                             <span class="dashboard-stat-mark"><i class="fa-solid fa-users"></i></span>
                         </article>
                 </div>
+             <div id="matiere-actions" class="crud-actions" hidden></div>
              <p class="messagEvide" id="messagEvide">Cliquez sur une matière pour voir ses informations.</p>
          </div>
          
@@ -619,10 +629,10 @@ require_once "session_config.php";
                                             ) ?>
                                 </span>
                        
-                        <form action="insertion_proffesseurs.php" method="post">
+                        <form action="insertion_proffesseurs.php" method="post" onsubmit="return confirm('Supprimer ce professeur ?');">
                             <input type="hidden" name="action" value="supprimer">
                             <input type="hidden" name="id_prof" value="<?= $prof['id_prof'] ?>">
-                            <button type="submit" class="delete"><i class="fa-regular fa-trash-can"></i></button>
+                            <button type="submit" class="delete" hidden><i class="fa-regular fa-trash-can"></i></button>
                         </form>
                     </li>    
                 <?php endforeach; ?>
@@ -645,25 +655,33 @@ require_once "session_config.php";
                         </div>
                                     
                     </div>
+                    <div id="professeur-actions" class="crud-actions" hidden></div>
                         <p id="messageVide" class="messageVide">Cliquez sur un professeur pour voir ses informations.</p>
                                     <!--Onglet des periodes-->
                       <div class=" h-[75vh]  ">
             <div class="shadow-md rounded-md bg-white p-4 h-[75vh] ">
                 <div class="box_onglet  w-[100%] "><!--peiodes-->
-                    <button   class="ongletSem is-active_onglet w-[50%]  bg-[#17233b] text-white rounded-md mb-[3px]" data-ongsem="1">Semestre 1</button>
-                    <button class="ongletSem w-[50%] bg-[#17233b] text-white rounded-md"  data-ongsem="2">Semestre 2</button>
+                    <button type="button" class="ongletSem is-active_onglet bg-[#17233b] text-white rounded-md mb-[3px]" data-ongsem="1">Trimestre 1</button>
+                    <button type="button" class="ongletSem bg-[#17233b] text-white rounded-md" data-ongsem="2">Trimestre 2</button>
+                    <button type="button" class="ongletSem bg-[#17233b] text-white rounded-md" data-ongsem="3">Trimestre 3</button>
                 </div>
                     <div class="relative border-8 h-[66vh]">
                         <div class="boxSem is-active_conteneur h-[60vh] w-[100%] p-[5px] py-4 opacity-[0] absolute "  data-ongsem="1" >
-                            <h1 hidden>Semestre 1</h1>
-                            <button id="btnCalculMoy1"  type="button">calcule</button>
+                            <h1 hidden>Trimestre 1</h1>
+                            <button id="btnCalculMoy1"  type="button" hidden>calcule</button>
                             <div id="notesProfesseur">
                                 <p>Aucune note enregistré.</p>
                             </div>
                         </div>
                         <div class="boxSem h-[60vh] w-[100%] p-[5px] py-4 absolute opacity-[0]" data-ongsem="2">
-                            <h1 hidden >Semestre 2</h1>
+                            <h1 hidden>Trimestre 2</h1>
                            <div id="notesProfesseur_2emep">
+                                <p>Aucune note enregistré.</p>
+                            </div>
+                        </div>
+                        <div class="boxSem h-[60vh] w-[100%] p-[5px] py-4 absolute opacity-[0]" data-ongsem="3">
+                            <h1 hidden>Trimestre 3</h1>
+                           <div id="notesProfesseur_3emep">
                                 <p>Aucune note enregistré.</p>
                             </div>
                         </div>
@@ -674,12 +692,12 @@ require_once "session_config.php";
         </div>      
 
             </div>
-                    <div class="h-[97vh] w-[30%] ml-[5px]  shadow-md rounded-md bg-white p-4 " >
+                    <div class="h-[97vh] w-[30%] ml-[5px]  shadow-md rounded-md bg-white p-4 " hidden>
                              <h1  class="text-black" >Calcul de moyenne</h1>
                         <div id="moyenneMatiere">
                             <p>Aucune moyenne</p>
                         </div>
-            </div>
+                    </div>
 
         </div>
 </div>
@@ -697,6 +715,8 @@ require_once "session_config.php";
    <!--<script src="fonction_js/btn-submite.js"></script>-->
    <script src="fonction_js/ongletPeriode.js"></script>
    
+   
                             
 </body> 
+
 </html>

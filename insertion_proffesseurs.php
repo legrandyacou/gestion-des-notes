@@ -48,6 +48,15 @@ if ($action === 'Enregistrer le professeur') {
         exit('Identifiant de professeur invalide.');
     }
 
+    $notes = $PDO->prepare('SELECT COUNT(*) FROM note WHERE id_prof = ? AND id_user = ?');
+    $notes->execute([$idProf, $idUser]);
+    $matieres = $PDO->prepare('SELECT COUNT(*) FROM matieres WHERE id_prof = ? AND id_user = ?');
+    $matieres->execute([$idProf, $idUser]);
+    if ((int) $notes->fetchColumn() > 0 || (int) $matieres->fetchColumn() > 0) {
+        http_response_code(409);
+        exit('Ce professeur est associé à des matières ou des notes et ne peut pas être supprimé.');
+    }
+
     $suppression = $PDO->prepare(
         'DELETE FROM professeurs WHERE id_prof = :id_prof AND id_user = :id_user'
     );
@@ -55,6 +64,10 @@ if ($action === 'Enregistrer le professeur') {
         'id_prof' => $idProf,
         'id_user' => $idUser,
     ]);
+    if ($suppression->rowCount() !== 1) {
+        http_response_code(404);
+        exit('Professeur introuvable.');
+    }
 } else {
     http_response_code(400);
     exit('Action invalide.');

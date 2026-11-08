@@ -367,6 +367,15 @@ video {
         line-height: inherit;
     }
 
+    .list-side li.bottoM .fa-right-from-bracket {
+        display: none;
+    }
+
+    .list-side li.bottoM > a > span {
+        font-size: clamp(7px, 2vw, 9px);
+        white-space: nowrap;
+    }
+
     .contenu.dashboard.contenu1 {
         top: 0;
         right: 0;
@@ -604,11 +613,48 @@ video {
         margin: 0;
     }
 
+    .auth-page #connexion {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .auth-page #connexion .boximg {
+        height: 80px;
+    }
+
+    .auth-page #connexion .boximg img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+    }
+
+    .auth-page #connexion .titre-conxion {
+        width: 100%;
+        margin: 0 0 4px;
+        font-size: clamp(24px, 7vw, 32px);
+    }
+
+    .auth-page #connexion > div:last-of-type {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 4px;
+    }
+
+    .auth-page #connexion > div:last-of-type span,
+    .auth-page #connexion > div:last-of-type a {
+        margin: 0 !important;
+    }
+
     .auth-page #inscription {
         display: flex;
         flex-direction: column;
         align-items: stretch;
         gap: 12px;
+        
     }
 
     .auth-page .box-nom,
@@ -667,5 +713,115 @@ video {
 
     .auth-page .enfant2 {
         padding: 20px 12px;
+    }
+}
+
+.crud-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.crud-actions a,
+.crud-actions button,
+.edit-record-page button,
+.edit-record-page > form > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 8px 12px;
+    border: 1px solid #dce5eb;
+    border-radius: 8px;
+    background: #fff;
+    color: #23483e;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.crud-actions form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.crud-actions button {
+    color: #a53d3d;
+}
+
+.crud-actions[hidden] {
+    display: none;
+}
+
+.edit-record-page {
+    width: min(100% - 32px, 560px);
+    margin: 32px auto;
+    padding: 24px;
+    border: 1px solid #e8edf1;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(23, 35, 59, 0.06);
+}
+
+.edit-record-page h1 {
+    margin-bottom: 20px;
+    color: #17233b;
+    font-size: clamp(22px, 5vw, 30px);
+}
+
+.edit-record-page > form {
+    display: grid;
+    gap: 10px;
+}
+
+.edit-record-page label {
+    margin-top: 6px;
+    color: #44546a;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.edit-record-page input,
+.edit-record-page select {
+    width: 100%;
+    min-height: 44px;
+    padding: 9px 12px;
+    border: 1px solid #d5dfe6;
+    border-radius: 8px;
+    background: #fff;
+    font: inherit;
+    font-size: 16px;
+}
+
+.edit-record-page > form > a {
+    justify-self: start;
+}
+
+.boxNote {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.boxNote > .crud-actions {
+    margin: 0;
+}
+
+@media (max-width: 620px) {
+    .edit-record-page {
+        width: calc(100% - 20px);
+        margin: 10px auto;
+        padding: 18px 14px;
+    }
+
+    .boxNote {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }

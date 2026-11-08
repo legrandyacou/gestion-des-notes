@@ -4,6 +4,7 @@ const libelleMatiere = document.getElementById("infoLib");
 const coefficientMatiere = document.getElementById("infocoeff");
 const heuresMatiere = document.getElementById("infoHeure");
 const professeurMatiere = document.getElementById("infoProfesseur");
+const actionsMatiere = document.getElementById("matiere-actions");
 let requeteMatiere = null;
 
 document.querySelectorAll(".item-matiere").forEach((item) => {
@@ -45,6 +46,33 @@ function chargerInfoMatiere(id, elementClique) {
         coefficientMatiere.textContent = reponse.coefficient ?? "";
         heuresMatiere.textContent = reponse.heure ?? "";
         professeurMatiere.textContent = reponse.professeur || "Aucun professeur associé";
+
+        if (actionsMatiere) {
+            actionsMatiere.replaceChildren();
+            const edit = document.createElement("a");
+            edit.href = `modifier_matiere.php?id_matiere=${encodeURIComponent(reponse.id_matiere)}`;
+            edit.textContent = "Modifier la matière";
+            actionsMatiere.appendChild(edit);
+
+            const deleteForm = document.createElement("form");
+            deleteForm.action = "suppMati.php";
+            deleteForm.method = "post";
+            deleteForm.addEventListener("submit", (event) => {
+                if (!window.confirm("Supprimer cette matière ? Les matières utilisées par des notes ne peuvent pas être supprimées.")) {
+                    event.preventDefault();
+                }
+            });
+            const id = document.createElement("input");
+            id.type = "hidden";
+            id.name = "id_matiere";
+            id.value = reponse.id_matiere;
+            const remove = document.createElement("button");
+            remove.type = "submit";
+            remove.textContent = "Supprimer";
+            deleteForm.append(id, remove);
+            actionsMatiere.appendChild(deleteForm);
+            actionsMatiere.hidden = false;
+        }
 
         messageMatiere.style.display = "none";
         document.querySelectorAll(".item-matiere").forEach((element) => {

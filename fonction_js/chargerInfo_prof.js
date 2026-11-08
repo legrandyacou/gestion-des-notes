@@ -5,8 +5,10 @@ const infoPrenom = document.getElementById("infoPreNom");
 const infoTel = document.getElementById("infoTel");
 const infoMatiere = document.getElementById("infoMatiere");
 const infoDispo = document.getElementById("infoDispo");
+const actionsProfesseur = document.getElementById("professeur-actions");
 const notesProfesseur = document.getElementById("notesProfesseur");
 const notesProfesseur2emep = document.getElementById("notesProfesseur_2emep");
+const notesProfesseur3emep = document.getElementById("notesProfesseur_3emep");
 const moyenneMatiere = document.getElementById("moyenneMatiere");
 const boutonCalculMoyenne = document.getElementById("btnCalculMoy1");
 let requeteProfesseur = null;
@@ -14,7 +16,7 @@ let moyennesProfesseur = [];
 
 document.querySelectorAll(".item-prof").forEach((item) => {
     item.addEventListener("click", (event) => {
-        if (event.target.closest("form")) {
+        if (event.target.closest("form, a, button")) {
             return;
         }
 
@@ -45,6 +47,10 @@ boutonCalculMoyenne?.addEventListener("click", () => {
 });
 
 function afficherNotes(conteneur, notes) {
+    if (!conteneur) {
+        return;
+    }
+
     conteneur.replaceChildren();
     if (!Array.isArray(notes) || notes.length === 0) {
         const message = document.createElement("p");
@@ -57,8 +63,36 @@ function afficherNotes(conteneur, notes) {
         const element = document.createElement("div");
         element.className = "boxNote styleNote";
         element.dataset.id = note.id_note;
-        element.textContent =
+        const details = document.createElement("span");
+        details.textContent =
             `${note.libelle_mat} - ${note.date_note} - ${note.note}/20`;
+        const actions = document.createElement("span");
+        actions.className = "crud-actions";
+
+        const edit = document.createElement("a");
+        edit.href = `modifier_note.php?id_note=${encodeURIComponent(note.id_note)}`;
+        edit.textContent = "Modifier";
+        actions.appendChild(edit);
+
+        const deleteForm = document.createElement("form");
+        deleteForm.action = "suppnNote.php";
+        deleteForm.method = "post";
+        deleteForm.addEventListener("submit", (event) => {
+            if (!window.confirm("Supprimer cette note ?")) {
+                event.preventDefault();
+            }
+        });
+        const id = document.createElement("input");
+        id.type = "hidden";
+        id.name = "id_note";
+        id.value = note.id_note;
+        const remove = document.createElement("button");
+        remove.type = "submit";
+        remove.textContent = "Supprimer";
+        deleteForm.append(id, remove);
+        actions.appendChild(deleteForm);
+
+        element.append(details, actions);
         conteneur.appendChild(element);
     });
 }
@@ -97,8 +131,18 @@ function chargerInfoProf(id, elementClique) {
         infoMatiere.textContent = reponse.matiere_libelle || "Aucune matière associée";
         infoDispo.textContent = reponse.jcours || "";
 
-        afficherNotes(notesProfesseur, reponse.notes);
+        if (actionsProfesseur) {
+            actionsProfesseur.replaceChildren();
+            const edit = document.createElement("a");
+            edit.href = `filtre.php?id_prof=${encodeURIComponent(reponse.id_prof)}`;
+            edit.textContent = "Modifier le professeur";
+            actionsProfesseur.appendChild(edit);
+            actionsProfesseur.hidden = false;
+        }
+
+        afficherNotes(notesProfesseur, reponse.notesP1);
         afficherNotes(notesProfesseur2emep, reponse.notesP2);
+        afficherNotes(notesProfesseur3emep, reponse.notesP3);
         moyennesProfesseur = Array.isArray(reponse.moyennes) ? reponse.moyennes : [];
         if (moyenneMatiere) {
             moyenneMatiere.replaceChildren();
